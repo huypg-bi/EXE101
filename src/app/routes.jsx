@@ -20,6 +20,7 @@ function AppRoutes() {
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Navigate to="/login" replace />} />
                 <Route path="/" element={<MainLayout><Dashboard /></MainLayout>} />
                 <Route path="/matches" element={<MainLayout><Matches /></MainLayout>} />
                 <Route path="/bookings" element={<MainLayout><Bookings /></MainLayout>} />

@@ -23,7 +23,7 @@ function CourtCard({ court, onBook }) {
 
   return (
     <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
-      {/* Thumbnail + rating badge */}
+      {/* Ảnh thu nhỏ + huy hiệu đánh giá */}
       <div className="relative shrink-0">
         <div className={`w-20 h-20 rounded-xl overflow-hidden ${!image ? `bg-gradient-to-br ${SPORT_GRADIENTS[sport] ?? 'from-gray-700 to-gray-500'} flex items-center justify-center` : ''}`}>
           {image
@@ -39,7 +39,7 @@ function CourtCard({ court, onBook }) {
         </div>
       </div>
 
-      {/* Info */}
+      {/* Thông tin sân */}
       <div className="flex-1 min-w-0">
         <h3 className="text-gray-900 dark:text-white font-semibold text-sm truncate">{name}</h3>
         <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5 truncate flex items-center gap-1">
@@ -51,7 +51,7 @@ function CourtCard({ court, onBook }) {
         </p>
       </div>
 
-      {/* Book button */}
+      {/* Nút đặt sân */}
       <button
         onClick={() => onBook?.(id)}
         className="shrink-0 bg-[#CDFF00] text-gray-900 text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#b8e800] active:scale-95 transition-all"

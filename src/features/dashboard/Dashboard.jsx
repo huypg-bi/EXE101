@@ -13,9 +13,9 @@ import pickleballImg from '../../assets/images/pickleball.svg';
 import tennisImg from '../../assets/images/tennis.svg';
 import protonImg from '../../assets/images/ProtonBadmintonCenter.png';
 import eliteImg from '../../assets/images/EliteFootballArena.png';
-// import { courtService, matchService } from '../../shared/services/api';
+// import { courtService, matchService } from '../../shared/services/api'; // TODO: bỏ comment khi API sẵn sàng
 
-/* ─── Mock Data (replace with API calls) ─── */
+/* ─── Dữ liệu mẫu (thay bằng API thực tế) ─── */
 
 const MOCK_FLASH_DEALS = [
   {
@@ -85,7 +85,7 @@ const MOCK_MATCHES = [
   },
 ];
 
-/* ─── Component ─── */
+/* ─── Component chính ─── */
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -106,46 +106,46 @@ function Dashboard() {
 
   const handleSearch = (keyword) => {
     setSearchKeyword(keyword);
-    // TODO: courtService.getAll({ search: keyword, sport: selectedSport })
+    // TODO: courtService.getAll({ search: keyword, sport: selectedSport }) — tìm kiếm sân theo từ khóa
   };
 
   const handleFilterSport = (sportId) => {
     const next = sportId === selectedSport ? null : sportId;
     setSelectedSport(next);
-    // TODO: courtService.getAll({ sport: next })
+    // TODO: courtService.getAll({ sport: next }) — lọc sân theo môn thể thao
   };
 
   const handleBookCourt = (courtId) => {
-    // TODO: navigate(`/courts/${courtId}/book`)
+    // TODO: navigate(`/courts/${courtId}/book`) — chuyển tới trang đặt sân
     console.log('Book court:', courtId);
   };
 
   const handleJoinMatch = (matchId) => {
-    // TODO: matchService.join(matchId).then(...)
+    // TODO: matchService.join(matchId).then(...) — tham gia trận đấu
     console.log('Join match:', matchId);
   };
 
   const handleCreateMatch = () => {
-    // TODO: navigate('/matches/create')
+    // TODO: navigate('/matches/create') — chuyển tới trang tạo trận mới
     console.log('Create match');
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 pb-24">
 
-      {/* ── Header ── */}
+      {/* ── Thanh tiêu đề ── */}
       <header className="sticky top-0 bg-white dark:bg-gray-900 z-40 px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-800 shadow-sm">
         <div className="flex items-center justify-between mb-3">
-          {/* Location selector */}
+          {/* Chọn vị trí */}
           <button className="flex items-center gap-1.5">
             <img src={gpsImg} alt="location" className="w-4 h-4 shrink-0" />
             <span className="font-semibold text-sm text-gray-800 dark:text-gray-100">{currentLocation}</span>
             <img src={arrowDownImg} alt="expand" className="w-3.5 h-3.5 dark:invert" />
           </button>
 
-          {/* Right icons */}
+          {/* Các icon bên phải */}
           <div className="flex items-center gap-2">
-            {/* Theme toggle */}
+            {/* Chuyển đổi giao diện sáng/tối */}
             <button
               onClick={() => setIsDark(d => !d)}
               className="p-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -157,13 +157,13 @@ function Dashboard() {
               }
             </button>
 
-            {/* Notification */}
+            {/* Thông báo */}
             <button className="relative p-1">
               <img src={notificationImg} alt="notifications" className="w-5 h-5 dark:invert" />
               <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-gray-900" />
             </button>
 
-            {/* Login button */}
+            {/* Nút đăng nhập */}
             <button
               onClick={() => navigate('/login')}
               className="flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
@@ -172,14 +172,14 @@ function Dashboard() {
               <span>Đăng nhập</span>
             </button>
 
-            {/* User avatar */}
+            {/* Avatar người dùng */}
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0">
               <span className="text-white text-xs font-bold select-none">U</span>
             </div>
           </div>
         </div>
 
-        {/* Search bar */}
+        {/* Thanh tìm kiếm */}
         <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-2xl px-3 py-2.5">
           <img src={searchImg} alt="search" className="w-4 h-4 shrink-0 opacity-40 dark:invert" />
           <input
@@ -194,7 +194,7 @@ function Dashboard() {
 
       <div className="px-4 pt-5 space-y-7">
 
-        {/* ── Flash Deals ── */}
+        {/* ── Ưu đãi nhanh ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-gray-900 dark:text-white font-bold text-lg">Flash Deals</h2>
@@ -220,7 +220,7 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* ── Sports Categories ── */}
+        {/* ── Danh mục môn thể thao ── */}
         <section>
           <div className="flex justify-around">
             {MOCK_SPORTS.map((sport) => (
@@ -248,7 +248,7 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* ── Nearby Courts ── */}
+        {/* ── Sân gần đây ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-gray-900 dark:text-white font-bold text-lg">Nearby Courts</h2>
@@ -261,7 +261,7 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* ── Join a Match ── */}
+        {/* ── Tham gia trận đấu ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-gray-900 dark:text-white font-bold text-lg">Join a Match</h2>
@@ -276,7 +276,7 @@ function Dashboard() {
 
       </div>
 
-      {/* ── Floating Action Button ── */}
+      {/* ── Nút hành động nổi ── */}
       <button
         onClick={handleCreateMatch}
         className="fixed bottom-20 right-5 w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-blue-600/40 hover:bg-blue-500 active:scale-95 transition-all z-40"

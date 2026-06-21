@@ -25,14 +25,14 @@ function MatchCard({ match, onJoin }) {
     <div
       className={`flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border-l-4 ${BORDER_COLORS[level] ?? 'border-gray-400'}`}
     >
-      {/* Avatar */}
+      {/* Ảnh đại diện */}
       <div
         className={`w-10 h-10 rounded-full shrink-0 flex items-center justify-center ${AVATAR_COLORS[avatarBadge] ?? 'bg-gray-500'}`}
       >
         <span className="text-white font-bold text-sm select-none">{avatarBadge}</span>
       </div>
 
-      {/* Info */}
+      {/* Thông tin trận đấu */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-gray-900 dark:text-white font-semibold text-sm">{userName}</span>
@@ -45,7 +45,7 @@ function MatchCard({ match, onJoin }) {
         </p>
       </div>
 
-      {/* Join button */}
+      {/* Nút tham gia */}
       <button
         onClick={() => onJoin?.(id)}
         className="shrink-0 bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-blue-500 active:scale-95 transition-all"
