@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Zap } from 'lucide-react';
 import { validateEmail } from '../../../shared/utils/validators';
+import { useAuth } from '../../../shared/context/AuthContext';
 
 const SOCIAL_BUTTONS = [
   {
@@ -38,6 +39,7 @@ const SOCIAL_BUTTONS = [
 
 function LoginForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +60,7 @@ function LoginForm() {
     setErrors({});
     setIsLoading(true);
     try {
-      // await authService.login(form); // TODO: gọi API đăng nhập
+      await login(form.email, form.password);
       navigate('/');
     } catch (err) {
       setErrors({ general: err.message || 'Đăng nhập thất bại, vui lòng thử lại' });

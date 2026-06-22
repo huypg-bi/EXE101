@@ -27,7 +27,8 @@ apiClient.interceptors.response.use(
 );
 
 export const authService = {
-  login: (phone) => apiClient.post('/auth/login', { phone }),
+  login: (email, password) => apiClient.post('/auth/login', { email, password }),
+  register: (data) => apiClient.post('/auth/register', data),
   logout: () => apiClient.post('/auth/logout'),
   getProfile: () => apiClient.get('/auth/me'),
 };

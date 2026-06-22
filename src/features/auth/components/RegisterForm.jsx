@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserPlus } from 'lucide-react';
-import { sanitizePhone, validatePhone, validatePassword } from '../../../shared/utils/validators';
+import { validateEmail, validatePassword } from '../../../shared/utils/validators';
+import { useAuth } from '../../../shared/context/AuthContext';
 
 function RegisterForm() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', phone: '', password: '' });
+  const { register } = useAuth();
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const onChange = (field) => (e) => {
     let val = e.target.value;
-    if (field === 'phone') val = sanitizePhone(val);
     setForm((p) => ({ ...p, [field]: val }));
     if (errors[field]) setErrors((p) => ({ ...p, [field]: '' }));
   };
@@ -20,15 +21,15 @@ function RegisterForm() {
     e.preventDefault();
     const errs = {};
     if (!form.name.trim()) errs.name = 'Vui lòng nhập họ và tên';
-    const pErr = validatePhone(form.phone);
-    if (pErr) errs.phone = pErr;
+    const emailErr = validateEmail(form.email);
+    if (emailErr) errs.email = emailErr;
     const pwErr = validatePassword(form.password);
     if (pwErr) errs.password = pwErr;
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setErrors({});
     setIsLoading(true);
     try {
-      // await authService.register(form); // TODO: gọi API đăng ký
+      await register({ email: form.email, password: form.password, name: form.name });
       navigate('/');
     } catch (err) {
       setErrors({ general: err.message || 'Đăng ký thất bại, vui lòng thử lại' });
@@ -68,26 +69,16 @@ function RegisterForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Số điện thoại</label>
-          <div
-            className={`flex items-center bg-[#1E2637] rounded-xl border transition-colors ${
-              errors.phone ? 'border-red-500' : 'border-[#2A3548] focus-within:border-blue-500'
-            }`}
-          >
-            <span className="px-4 py-3.5 text-gray-300 text-sm font-medium border-r border-[#2A3548] shrink-0 select-none">
-              (+84)
-            </span>
-            <input
-              type="tel"
-              value={form.phone}
-              onChange={onChange('phone')}
-              placeholder="Số điện thoại"
-              inputMode="numeric"
-              className="flex-1 bg-transparent px-4 py-3.5 text-white placeholder-gray-500 text-sm outline-none"
-            />
-          </div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <input
+            type="email"
+            value={form.email}
+            onChange={onChange('email')}
+            placeholder="your@email.com"
+            className={inputCls('email')}
+          />
           <div className="h-5 mt-1">
-            {errors.phone && <p className="text-red-400 text-xs">{errors.phone}</p>}
+            {errors.email && <p className="text-red-400 text-xs">{errors.email}</p>}
           </div>
         </div>
 

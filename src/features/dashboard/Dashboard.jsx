@@ -11,12 +11,10 @@ import badmintonImg from '../../assets/images/badminton.svg';
 import footballImg from '../../assets/images/football.svg';
 import pickleballImg from '../../assets/images/pickleball.svg';
 import tennisImg from '../../assets/images/tennis.svg';
-import protonImg from '../../assets/images/ProtonBadmintonCenter.png';
-import eliteImg from '../../assets/images/EliteFootballArena.png';
-// import { courtService, matchService } from '../../shared/services/api'; // TODO: bỏ comment khi API sẵn sàng
+import { courtService, matchService, bookingService } from '../../shared/services/api';
+import { useAuth } from '../../shared/context/AuthContext';
 
-/* ─── Dữ liệu mẫu (thay bằng API thực tế) ─── */
-
+/* ─── Dữ liệu mẫu ─── */
 const MOCK_FLASH_DEALS = [
   {
     id: 1,
@@ -43,56 +41,18 @@ const MOCK_SPORTS = [
   { id: 4, name: 'Tennis', image: tennisImg },
 ];
 
-const MOCK_COURTS = [
-  {
-    id: 1,
-    name: 'Proton Badminton Center',
-    rating: 4.8,
-    distance: '1.2 km',
-    district: 'Quận 7',
-    price: '120k/h',
-    sport: 'badminton',
-    image: protonImg,
-  },
-  {
-    id: 2,
-    name: 'Elite Football Arena',
-    rating: 4.6,
-    distance: '2.8 km',
-    district: 'Quận 2',
-    price: '450k/h',
-    sport: 'football',
-    image: eliteImg,
-  },
-];
-
-const MOCK_MATCHES = [
-  {
-    id: 1,
-    userName: 'Minh Tran',
-    level: 'INTERMEDIATE',
-    sport: 'Badminton',
-    time: 'Today, 19:00',
-    avatarBadge: 'B',
-  },
-  {
-    id: 2,
-    userName: 'Lan Nguyen',
-    level: 'PRO',
-    sport: 'Pickleball',
-    time: 'Tomorrow, 07:00',
-    avatarBadge: 'P',
-  },
-];
-
 /* ─── Component chính ─── */
-
 function Dashboard() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedSport, setSelectedSport] = useState(null);
   const [currentLocation] = useState('Hồ Chí Minh');
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') === 'dark');
+  const [courts, setCourts] = useState([]);
+  const [matches, setMatches] = useState([]);
+
+  const isLoggedIn = !!user;
 
   useEffect(() => {
     if (isDark) {
@@ -104,31 +64,148 @@ function Dashboard() {
     }
   }, [isDark]);
 
+  // Fetch data on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const courtsData = await courtService.getAll();
+        setCourts(courtsData);
+        
+        const matchesData = await matchService.getAll();
+        setMatches(matchesData);
+      } catch (err) {
+        console.error('Lỗi khi fetch dữ liệu dashboard:', err);
+      }
+    };
+    loadData();
+  }, []);
+
   const handleSearch = (keyword) => {
     setSearchKeyword(keyword);
-    // TODO: courtService.getAll({ search: keyword, sport: selectedSport }) — tìm kiếm sân theo từ khóa
   };
 
   const handleFilterSport = (sportId) => {
-    const next = sportId === selectedSport ? null : sportId;
-    setSelectedSport(next);
-    // TODO: courtService.getAll({ sport: next }) — lọc sân theo môn thể thao
+    setSelectedSport(sportId === selectedSport ? null : sportId);
   };
 
-  const handleBookCourt = (courtId) => {
-    // TODO: navigate(`/courts/${courtId}/book`) — chuyển tới trang đặt sân
-    console.log('Book court:', courtId);
+  const handleBookCourt = async (courtId) => {
+    try {
+      if (!isLoggedIn) {
+        alert('Vui lòng đăng nhập để đặt sân!');
+        navigate('/login');
+        return;
+      }
+      
+      const court = courts.find(c => c.id === courtId);
+      if (!court) return;
+      
+      const priceText = `${court.price_per_hour.toLocaleString('vi-VN')} VNĐ/h`;
+      const priceVal = court.price_per_hour * 2;
+      
+      const confirmBooking = window.confirm(`Bạn muốn đặt sân này trong 2 giờ tới với giá ${priceVal.toLocaleString('vi-VN')} VNĐ chứ?`);
+      if (!confirmBooking) return;
+      
+      const startTime = new Date();
+      startTime.setHours(startTime.getHours() + 1);
+      const endTime = new Date(startTime);
+      endTime.setHours(endTime.getHours() + 2);
+      
+      const bookingData = {
+        court_id: courtId,
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
+        total_price: priceVal
+      };
+      
+      await bookingService.create(bookingData);
+      alert('Đặt sân thành công! Đang chuyển đến danh sách đặt sân...');
+      navigate('/bookings');
+    } catch (err) {
+      alert(err.message || 'Lỗi khi đặt sân');
+    }
   };
 
-  const handleJoinMatch = (matchId) => {
-    // TODO: matchService.join(matchId).then(...) — tham gia trận đấu
-    console.log('Join match:', matchId);
+  const handleJoinMatch = async (matchId) => {
+    try {
+      if (!isLoggedIn) {
+        alert('Vui lòng đăng nhập để tham gia trận đấu!');
+        navigate('/login');
+        return;
+      }
+      await matchService.join(matchId);
+      alert('Đã tham gia trận đấu thành công!');
+      
+      // Refresh matches list
+      const matchesData = await matchService.getAll();
+      setMatches(matchesData);
+    } catch (err) {
+      alert(err.message || 'Lỗi khi tham gia trận đấu');
+    }
   };
 
-  const handleCreateMatch = () => {
-    // TODO: navigate('/matches/create') — chuyển tới trang tạo trận mới
-    console.log('Create match');
+  const handleCreateMatch = async () => {
+    try {
+      if (!isLoggedIn) {
+        alert('Vui lòng đăng nhập để tạo trận giao lưu!');
+        navigate('/login');
+        return;
+      }
+      
+      const title = prompt('Nhập tiêu đề trận giao lưu của bạn:', 'Giao lưu cầu lông cuối tuần');
+      if (!title) return;
+      
+      // Find suitable badminton court
+      const badmintonCourt = courts.find(c => c.sport?.name === 'Cầu lông');
+      if (!badmintonCourt) {
+        alert('Không tìm thấy sân cầu lông hợp lệ nào để tổ chức!');
+        return;
+      }
+      
+      const startTime = new Date();
+      startTime.setHours(startTime.getHours() + 3);
+      const endTime = new Date(startTime);
+      endTime.setHours(endTime.getHours() + 2);
+      
+      const matchData = {
+        title: title,
+        description: 'Giao lưu vui vẻ, nâng cao sức khỏe và trình độ.',
+        sport_id: badmintonCourt.sport_id,
+        court_id: badmintonCourt.id,
+        required_level: 'Intermediate',
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
+        max_players: 4
+      };
+      
+      await matchService.create(matchData);
+      alert('Tạo trận giao lưu thành công!');
+      
+      // Refresh matches list
+      const matchesData = await matchService.getAll();
+      setMatches(matchesData);
+    } catch (err) {
+      alert(err.message || 'Lỗi khi tạo trận giao lưu');
+    }
   };
+
+  const handleLogout = () => {
+    logout();
+    alert('Đã đăng xuất!');
+  };
+
+  // Client-side filtering
+  const filteredCourts = courts.filter(court => {
+    const matchesSearch = searchKeyword
+      ? `${court.venue?.name} ${court.name} ${court.venue?.address}`.toLowerCase().includes(searchKeyword.toLowerCase())
+      : true;
+    const matchesSport = selectedSport
+      ? (selectedSport === 1 && court.sport?.name === 'Cầu lông') ||
+        (selectedSport === 2 && court.sport?.name === 'Bóng đá') ||
+        (selectedSport === 3 && court.sport?.name === 'Pickleball') ||
+        (selectedSport === 4 && court.sport?.name === 'Tennis')
+      : true;
+    return matchesSearch && matchesSport;
+  });
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 pb-24">
@@ -163,18 +240,29 @@ function Dashboard() {
               <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-gray-900" />
             </button>
 
-            {/* Nút đăng nhập */}
-            <button
-              onClick={() => navigate('/login')}
-              className="flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>Đăng nhập</span>
-            </button>
+            {/* Đăng nhập / Đăng xuất */}
+            {isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="text-xs font-semibold text-red-600 dark:text-red-400 border border-red-600 dark:border-red-400 px-2.5 py-1.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+              >
+                Đăng xuất
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Đăng nhập</span>
+              </button>
+            )}
 
             {/* Avatar người dùng */}
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0">
-              <span className="text-white text-xs font-bold select-none">U</span>
+              <span className="text-white text-xs font-bold select-none">
+                {isLoggedIn ? (user.profile?.full_name || user.email).charAt(0).toUpperCase() : 'U'}
+              </span>
             </div>
           </div>
         </div>
@@ -255,9 +343,22 @@ function Dashboard() {
             <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">View Map</button>
           </div>
           <div className="flex flex-col gap-3">
-            {MOCK_COURTS.map((court) => (
-              <CourtCard key={court.id} court={court} onBook={handleBookCourt} />
-            ))}
+            {filteredCourts.map((court) => {
+              const mappedCourt = {
+                id: court.id,
+                name: `${court.venue?.name || 'Sân đấu'} - ${court.name}`,
+                rating: 4.8,
+                distance: '1.2 km',
+                district: court.venue?.address?.split(',').slice(-2, -1)[0]?.trim() || 'Quận 7',
+                price: `${(court.price_per_hour / 1000).toFixed(0)}k/h`,
+                sport: court.sport?.name === 'Cầu lông' ? 'badminton' : (court.sport?.name === 'Bóng đá' ? 'football' : (court.sport?.name === 'Pickleball' ? 'pickleball' : 'tennis')),
+                image: null
+              };
+              return <CourtCard key={court.id} court={mappedCourt} onBook={handleBookCourt} />;
+            })}
+            {filteredCourts.length === 0 && (
+              <p className="text-gray-500 text-center text-sm py-4">Không có sân nào phù hợp</p>
+            )}
           </div>
         </section>
 
@@ -265,12 +366,24 @@ function Dashboard() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-gray-900 dark:text-white font-bold text-lg">Join a Match</h2>
-            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">View All</button>
+            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium" onClick={() => navigate('/matches')}>View All</button>
           </div>
           <div className="flex flex-col gap-3">
-            {MOCK_MATCHES.map((match) => (
-              <MatchCard key={match.id} match={match} onJoin={handleJoinMatch} />
-            ))}
+            {matches.map((match) => {
+              const userName = match.host?.profile?.full_name || 'Người dùng';
+              const mappedMatch = {
+                id: match.id,
+                userName: userName,
+                level: ['BEGINNER', 'INTERMEDIATE', 'PRO'].includes(match.required_level.toUpperCase()) ? match.required_level.toUpperCase() : 'INTERMEDIATE',
+                sport: match.sport?.name || 'Thể thao',
+                time: new Date(match.start_time).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) + ', ' + new Date(match.start_time).toLocaleDateString('vi-VN'),
+                avatarBadge: userName.charAt(0).toUpperCase()
+              };
+              return <MatchCard key={match.id} match={mappedMatch} onJoin={handleJoinMatch} />;
+            })}
+            {matches.length === 0 && (
+              <p className="text-gray-500 text-center text-sm py-4">Không có trận đấu nào</p>
+            )}
           </div>
         </section>
 
