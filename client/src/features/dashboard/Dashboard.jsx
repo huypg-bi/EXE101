@@ -261,29 +261,9 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* ── Tham gia trận đấu ── */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-gray-900 dark:text-white font-bold text-lg">Join a Match</h2>
-            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">View All</button>
-          </div>
-          <div className="flex flex-col gap-3">
-            {MOCK_MATCHES.map((match) => (
-              <MatchCard key={match.id} match={match} onJoin={handleJoinMatch} />
-            ))}
-          </div>
-        </section>
 
       </div>
 
-      {/* ── Nút hành động nổi ── */}
-      <button
-        onClick={handleCreateMatch}
-        className="fixed bottom-20 right-5 w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-blue-600/40 hover:bg-blue-500 active:scale-95 transition-all z-40"
-        aria-label="Tạo trận mới"
-      >
-        <Plus className="w-7 h-7" />
-      </button>
     </div>
   );
 }
