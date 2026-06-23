@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Moon, Sun, LogIn } from 'lucide-react';
+import { Moon, Sun, LogIn, Sparkles, LogOut, Crown } from 'lucide-react';
 import gpsImg from '../../assets/svgs/gps.svg';
 import arrowDownImg from '../../assets/svgs/arrow_down.svg';
 import notificationImg from '../../assets/svgs/notification.svg';
 import searchImg from '../../assets/svgs/search.svg';
-import badmintonImg from '../../assets/svgs/badminton.svg';
-import footballImg from '../../assets/svgs/football.svg';
-import pickleballImg from '../../assets/svgs/pickleball.svg';
-import tennisImg from '../../assets/svgs/tennis.svg';
+import badmintonImg from '../../assets/icons/badminton.png';
+import footballImg from '../../assets/icons/football.png';
+import pickleballImg from '../../assets/icons/pickelball.png';
+import tennisImg from '../../assets/icons/tennis.png';
 import protonImg from '../../assets/images/ProtonBadmintonCenter.png';
 import eliteImg from '../../assets/images/EliteFootballArena.png';
 import PostCard from './components/PostCard';
@@ -130,6 +130,7 @@ function Dashboard() {
   const [selectedSport, setSelectedSport] = useState(null);
   const [currentLocation] = useState('Hồ Chí Minh');
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   useEffect(() => {
     if (isDark) {
@@ -207,18 +208,74 @@ function Dashboard() {
               <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-gray-900" />
             </button>
 
+            {/* Nút Premium */}
+            <button className="relative overflow-hidden group bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-[0_0_15px_rgba(234,179,8,0.4)] hover:scale-105 transition-transform">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Premium</span>
+              {/* Hiệu ứng ánh gương lấp lánh */}
+              <div className="absolute inset-0 w-[200%] -translate-x-full bg-gradient-to-r from-transparent via-white/60 to-transparent animate-shimmer pointer-events-none"></div>
+            </button>
+
             {/* Nút đăng nhập */}
             <button
               onClick={() => navigate('/login')}
-              className="flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+              className="hidden md:flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
             >
               <LogIn className="w-3.5 h-3.5" />
               <span>Đăng nhập</span>
             </button>
 
-            {/* Avatar người dùng */}
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0">
-              <span className="text-white text-xs font-bold select-none">U</span>
+            {/* Avatar người dùng có Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0 hover:ring-2 hover:ring-blue-500 transition-all"
+              >
+                <span className="text-white text-xs font-bold select-none">U</span>
+              </button>
+
+              {/* Profile Dropdown */}
+              {isProfileOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsProfileOpen(false)}></div>
+                  <div className="absolute top-full right-0 mt-3 w-64 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xl z-50 p-4 animate-in fade-in zoom-in duration-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0 text-white text-lg font-bold">U</div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 dark:text-white leading-tight">Nguyễn Văn A</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">van.a@example.com</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h5 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Sport Levels</h5>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
+                          <img src={badmintonImg} alt="Badminton" className="w-5 h-5 rounded-md object-cover" />
+                          Badminton
+                        </span>
+                        <span className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-md text-xs">Intermediate</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
+                          <img src={tennisImg} alt="Tennis" className="w-5 h-5 rounded-md object-cover" />
+                          Tennis
+                        </span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md text-xs">Advanced</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
+                      <button className="w-full flex items-center justify-center gap-2 text-sm text-red-600 dark:text-red-500 font-bold py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        <LogOut className="w-4 h-4" />
+                        Log out
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -248,12 +305,14 @@ function Dashboard() {
                 className="flex flex-col items-center gap-2"
               >
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${selectedSport === sport.id
-                    ? 'bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500'
-                    : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm'
+                  className={`relative w-14 h-14 rounded-full overflow-hidden transition-all flex items-center justify-center ${
+                    selectedSport === sport.id ? 'scale-105' : 'hover:scale-105'
                   }`}
                 >
-                  <img src={sport.image} alt={sport.name} className="w-8 h-8 object-contain" />
+                  <img src={sport.image} alt={sport.name} className="w-full h-full object-cover" />
+                  {selectedSport === sport.id && (
+                    <div className="absolute inset-0 rounded-full border-[3px] border-blue-500 pointer-events-none"></div>
+                  )}
                 </div>
                 <span className={`text-xs font-medium ${selectedSport === sport.id
                   ? 'text-blue-600 dark:text-blue-400'

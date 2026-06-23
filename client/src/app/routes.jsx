@@ -5,7 +5,7 @@ import Tournaments from '../features/tournaments/Tournaments.jsx';
 import Matches from '../features/matches/Matches.jsx';
 import Bookings from '../features/bookings/Bookings.jsx';
 import MapPage from '../features/map/Map.jsx';
-import Profile from '../features/profile/Profile.jsx';
+import Team from '../features/team/Team.jsx';
 import CourtDetailPage from '../features/courts/pages/CourtDetailPage.jsx';
 import BottomNavigation from '../shared/components/BottomNavigation.jsx';
 import ChatPanel from '../shared/components/ChatPanel.jsx';
@@ -44,7 +44,7 @@ function AppRoutes() {
                     <Route path="/matches" element={<MainLayout><Matches /></MainLayout>} />
                     <Route path="/bookings" element={<MainLayout><Bookings /></MainLayout>} />
                     <Route path="/map" element={<MainLayout><MapPage /></MainLayout>} />
-                    <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
+                    <Route path="/team" element={<MainLayout><Team /></MainLayout>} />
                     {/* Trang chi tiết sân — không có BottomNavigation */}
                     <Route path="/courts/:id" element={<CourtDetailPage />} />
                     <Route path="*" element={<Navigate to="/" replace />} />

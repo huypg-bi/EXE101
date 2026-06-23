@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Trophy, Gamepad2, Calendar, MapPin, MessageSquare, User } from 'lucide-react';
+import { Home, Trophy, Gamepad2, Calendar, MapPin, MessageSquare, Users } from 'lucide-react';
 import { useChat } from '../context/ChatContext';
 
 const NAV_ITEMS = [
@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { id: 'gameroom', label: 'Game Room', Icon: Gamepad2, path: '/matches' },
   { id: 'bookings', label: 'Bookings', Icon: Calendar, path: '/bookings' },
   { id: 'map', label: 'Map', Icon: MapPin, path: '/map' },
-  { id: 'profile', label: 'Profile', Icon: User, path: '/profile' },
+  { id: 'team', label: 'Team', Icon: Users, path: '/team' },
 ];
 
 function NavButton({ id, label, Icon, active, onClick }) {
