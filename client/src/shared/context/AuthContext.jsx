@@ -59,12 +59,39 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateProfile = (data) => {
+    setUser(prev => {
+      if (!prev) return prev;
+      
+      const newProfile = { ...prev.profile, full_name: data.name };
+      
+      // Update sports array
+      const newSports = [...(prev.sports || [])];
+      
+      Object.keys(data.sports).forEach(sportName => {
+        const existingIndex = newSports.findIndex(s => s.sport.name === sportName);
+        if (existingIndex >= 0) {
+          newSports[existingIndex] = { ...newSports[existingIndex], skill_level: data.sports[sportName] };
+        } else {
+          newSports.push({
+            id: Date.now() + Math.random(),
+            skill_level: data.sports[sportName],
+            sport: { name: sportName }
+          });
+        }
+      });
+      
+      return { ...prev, profile: newProfile, sports: newSports };
+    });
+  };
+
   const value = {
     user,
     token,
     login,
     register,
     logout,
+    updateProfile,
     loading,
     isAuthenticated: !!user,
   };
