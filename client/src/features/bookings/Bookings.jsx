@@ -12,6 +12,7 @@ import tennisImg from '../../assets/icons/tennis.png';
 import protonImg from '../../assets/images/ProtonBadmintonCenter.png';
 import eliteImg from '../../assets/images/EliteFootballArena.png';
 import CourtCard from '../home/components/CourtCard';
+import Header from '../../shared/components/Header';
 
 /* ─── Ưu đãi nhanh ─── */
 
@@ -149,119 +150,20 @@ function Bookings() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 pb-24">
 
-      {/* ── Thanh tiêu đề — giống Home ── */}
-      <header className="sticky top-0 bg-white dark:bg-gray-900 z-40 px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-800 shadow-sm">
-        <div className="flex items-center justify-between mb-3">
-          {/* Chọn vị trí */}
-          <button className="flex items-center gap-1.5">
-            <img src={gpsImg} alt="location" className="w-4 h-4 shrink-0" />
-            <span className="font-semibold text-sm text-gray-800 dark:text-gray-100">{currentLocation}</span>
-            <img src={arrowDownImg} alt="expand" className="w-3.5 h-3.5 dark:invert" />
-          </button>
+      {/* ── Thanh tiêu đề ── */}
+      <Header 
+        currentLocation={currentLocation}
+        isDark={isDark}
+        setIsDark={setIsDark}
+        onOpenEditProfile={() => {
+          navigate('/gamerooms');
+        }}
+        searchKeyword={searchKeyword}
+        setSearchKeyword={setSearchKeyword}
+        searchPlaceholder="Search sports, courts or areas..."
+      />
 
-          {/* Các icon bên phải */}
-          <div className="flex items-center gap-2">
-            {/* Chuyển đổi giao diện sáng/tối */}
-            <button
-              onClick={() => setIsDark((d) => !d)}
-              className="p-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {isDark
-                ? <Sun className="w-4 h-4 text-yellow-400" />
-                : <Moon className="w-4 h-4 text-gray-600" />
-              }
-            </button>
 
-            {/* Thông báo */}
-            <button className="relative p-1">
-              <img src={notificationImg} alt="notifications" className="w-5 h-5 dark:invert" />
-              <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-gray-900" />
-            </button>
-
-            {/* Nút Premium */}
-            <button className="relative overflow-hidden group bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 shadow-[0_0_15px_rgba(234,179,8,0.4)] hover:scale-105 transition-transform">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Premium</span>
-              <div className="absolute inset-0 w-[200%] -translate-x-full bg-gradient-to-r from-transparent via-white/60 to-transparent animate-shimmer pointer-events-none"></div>
-            </button>
-
-            {/* Nút đăng nhập */}
-            <button
-              onClick={() => navigate('/login')}
-              className="hidden md:flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>Đăng nhập</span>
-            </button>
-
-            {/* Avatar người dùng có Dropdown */}
-            <div className="relative">
-              <button 
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0 hover:ring-2 hover:ring-blue-500 transition-all"
-              >
-                <span className="text-white text-xs font-bold select-none">U</span>
-              </button>
-
-              {/* Profile Dropdown */}
-              {isProfileOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setIsProfileOpen(false)}></div>
-                  <div className="absolute top-full right-0 mt-3 w-64 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xl z-50 p-4 animate-in fade-in zoom-in duration-200">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shrink-0 text-white text-lg font-bold">U</div>
-                      <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white leading-tight">Nguyễn Văn A</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">van.a@example.com</p>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <h5 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Sport Levels</h5>
-                      
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
-                          <img src={badmintonImg} alt="Badminton" className="w-5 h-5 rounded-md object-cover" />
-                          Badminton
-                        </span>
-                        <span className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-md text-xs">Intermediate</span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
-                          <img src={tennisImg} alt="Tennis" className="w-5 h-5 rounded-md object-cover" />
-                          Tennis
-                        </span>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md text-xs">Advanced</span>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
-                      <button className="w-full flex items-center justify-center gap-2 text-sm text-red-600 dark:text-red-500 font-bold py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                        <LogOut className="w-4 h-4" />
-                        Log out
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Thanh tìm kiếm */}
-        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-2xl px-3 py-2.5">
-          <img src={searchImg} alt="search" className="w-4 h-4 shrink-0 opacity-40 dark:invert" />
-          <input
-            type="text"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            placeholder="Search sports, courts or areas..."
-            className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 outline-none"
-          />
-        </div>
-      </header>
 
       <div className="px-4 pt-5 space-y-7">
 

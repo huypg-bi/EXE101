@@ -21,13 +21,15 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    const message = error.response?.data?.message || 'Đã có lỗi xảy ra';
+    // FastAPI trả về lỗi trong trường `detail`, Node/Express thường trả về `message`
+    const message = error.response?.data?.detail || error.response?.data?.message || 'Đã có lỗi xảy ra';
     return Promise.reject(new Error(message));
   }
 );
 
 export const authService = {
-  login: (phone) => apiClient.post('/auth/login', { phone }),
+  login: (data) => apiClient.post('/auth/login', data),
+  register: (data) => apiClient.post('/auth/register', data),
   logout: () => apiClient.post('/auth/logout'),
   getProfile: () => apiClient.get('/auth/me'),
 };

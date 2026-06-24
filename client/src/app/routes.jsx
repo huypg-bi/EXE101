@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '../shared/context/AuthContext';
 import Login from '../features/auth/Login.jsx';
 import Home from '../features/home/Home.jsx';
 import Tournament from '../features/tournament/Tournament.jsx';
@@ -32,6 +33,14 @@ function MainLayout({ children }) {
     );
 }
 
+function ProtectedRoute({ children }) {
+    const { isAuthenticated } = useAuth();
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
+    return children;
+}
+
 function AppRoutes() {
     return (
         <BrowserRouter>
@@ -39,14 +48,14 @@ function AppRoutes() {
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Navigate to="/login" replace />} />
-                    <Route path="/" element={<MainLayout><Home /></MainLayout>} />
-                    <Route path="/tournaments" element={<MainLayout><Tournament /></MainLayout>} />
-                    <Route path="/matches" element={<MainLayout><GameRoom /></MainLayout>} />
-                    <Route path="/bookings" element={<MainLayout><Bookings /></MainLayout>} />
-                    <Route path="/map" element={<MainLayout><MapPage /></MainLayout>} />
-                    <Route path="/team" element={<MainLayout><Team /></MainLayout>} />
+                    <Route path="/" element={<ProtectedRoute><MainLayout><Home /></MainLayout></ProtectedRoute>} />
+                    <Route path="/tournaments" element={<ProtectedRoute><MainLayout><Tournament /></MainLayout></ProtectedRoute>} />
+                    <Route path="/matches" element={<ProtectedRoute><MainLayout><GameRoom /></MainLayout></ProtectedRoute>} />
+                    <Route path="/bookings" element={<ProtectedRoute><MainLayout><Bookings /></MainLayout></ProtectedRoute>} />
+                    <Route path="/map" element={<ProtectedRoute><MainLayout><MapPage /></MainLayout></ProtectedRoute>} />
+                    <Route path="/team" element={<ProtectedRoute><MainLayout><Team /></MainLayout></ProtectedRoute>} />
                     {/* Trang chi tiết sân — không có BottomNavigation */}
-                    <Route path="/courts/:id" element={<CourtDetailPage />} />
+                    <Route path="/courts/:id" element={<ProtectedRoute><CourtDetailPage /></ProtectedRoute>} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </ChatProvider>
