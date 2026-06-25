@@ -9,7 +9,6 @@ import badmintonImg from '../../assets/icons/badminton.png';
 import pickleballImg from '../../assets/icons/pickelball.png';
 import tennisImg from '../../assets/icons/tennis.png';
 import footballImg from '../../assets/icons/football.png';
-import EditProfileModal from '../profile/EditProfileModal';
 import { useAuth } from '../../shared/context/AuthContext';
 import Header from '../../shared/components/Header';
 import { gameRoomService } from '../../shared/services/api';
@@ -73,7 +72,7 @@ function RoomCard({ room, onJoin }) {
       <div className="flex-1 min-w-0 space-y-1">
         {/* Tên phòng & Level */}
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-gray-900 dark:text-white font-bold text-base line-clamp-1">{title || 'Phòng giao lưu thể thao'}</h3>
+          <h3 className="text-gray-900 dark:text-white font-bold text-base line-clamp-1">{title || ''}</h3>
           <span className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${LEVEL_STYLES[level] ?? 'bg-gray-100 text-gray-600'}`}>
             {level}
           </span>
@@ -115,6 +114,26 @@ function RoomCard({ room, onJoin }) {
   );
 }
 
+/* ─── Skeleton Loading cho Room Card ─── */
+function RoomCardSkeleton() {
+  return (
+    <div className="flex items-start gap-4 p-5 bg-gray-50 dark:bg-gray-900 rounded-2xl border-l-4 border-gray-200 dark:border-gray-800 shadow-sm animate-pulse">
+      <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 shrink-0 mt-1"></div>
+      <div className="flex-1 space-y-3 py-1">
+        <div className="flex justify-between items-center">
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-1/2"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div>
+        </div>
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-1/3"></div>
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-1/4 mt-2"></div>
+      </div>
+      <div className="flex flex-col justify-center ml-2">
+        <div className="w-16 h-9 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Component chính ─── */
 
 function GameRoom() {
@@ -129,11 +148,11 @@ function GameRoom() {
   // Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isModalRendered, setIsModalRendered] = useState(false);
-  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
 
   // Form State
   const [rooms, setRooms] = useState([]); // Khởi tạo mảng trống
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -146,10 +165,11 @@ function GameRoom() {
   });
 
   const fetchRooms = async () => {
+    setIsLoading(true);
     try {
       const data = await gameRoomService.getAll();
       const mappedRooms = data.map(match => {
-        const userName = match.host?.profile?.full_name || match.host?.email || 'Người chơi';
+        const userName = match.host?.profile?.full_name || match.host?.email || '';
         // Note: participants from backend might include host. Let's say joined = total participants - 1 (host)
         const joined = Math.max(0, (match.participants?.length || 1) - 1);
         
@@ -158,20 +178,22 @@ function GameRoom() {
           title: match.title,
           description: match.description,
           hostName: userName,
-          level: match.required_level?.toUpperCase() || 'INTERMEDIATE',
+          level: match.required_level?.toUpperCase() || '',
           sport: MOCK_SPORTS.find(s => s.id === match.sport_id)?.key || 'badminton',
-          sportLabel: match.sport?.name || MOCK_SPORTS.find(s => s.id === match.sport_id)?.name || 'Thể thao',
+          sportLabel: match.sport?.name || MOCK_SPORTS.find(s => s.id === match.sport_id)?.name || '',
           time: new Date(match.start_time).toLocaleString('vi-VN', {
             year: 'numeric', month: '2-digit', day: '2-digit',
             hour: '2-digit', minute: '2-digit'
           }),
-          avatarBadge: userName.charAt(0).toUpperCase(),
+          avatarBadge: userName ? userName.charAt(0).toUpperCase() : '',
           players: { joined: joined, required: match.max_players - 1 }
         };
       });
       setRooms(mappedRooms);
     } catch (err) {
       console.error("Lỗi khi tải danh sách phòng:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -287,7 +309,6 @@ function GameRoom() {
         currentLocation={currentLocation}
         isDark={isDark}
         setIsDark={setIsDark}
-        onOpenEditProfile={() => setIsEditProfileOpen(true)}
         searchKeyword={searchKeyword}
         setSearchKeyword={setSearchKeyword}
         searchPlaceholder="Search rooms, players or sports..."
@@ -343,7 +364,14 @@ function GameRoom() {
               </button>
             </div>
           </div>
-          {filteredRooms.length > 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col gap-3">
+              <RoomCardSkeleton />
+              <RoomCardSkeleton />
+              <RoomCardSkeleton />
+              <RoomCardSkeleton />
+            </div>
+          ) : filteredRooms.length > 0 ? (
             <div className="flex flex-col gap-3">
               {filteredRooms.map((room) => (
                 <RoomCard key={room.id} room={room} onJoin={handleJoin} />
@@ -535,17 +563,6 @@ function GameRoom() {
           </div>
         </div>
       )}
-
-      {/* ── Modal Sửa Thông Tin ── */}
-      <EditProfileModal 
-        isOpen={isEditProfileOpen} 
-        onClose={() => setIsEditProfileOpen(false)}
-        user={user}
-        onSave={(data) => {
-          console.log('Saved profile:', data);
-          updateProfile(data);
-        }}
-      />
 
     </div>
   );

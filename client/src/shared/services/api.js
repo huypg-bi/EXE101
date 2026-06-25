@@ -32,6 +32,7 @@ export const authService = {
   register: (data) => apiClient.post('/auth/register', data),
   logout: () => apiClient.post('/auth/logout'),
   getProfile: () => apiClient.get('/auth/me'),
+  updateProfile: (data) => apiClient.put('/auth/me', data),
 };
 
 export const courtService = {

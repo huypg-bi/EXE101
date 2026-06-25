@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Search, MapPin, Navigation, Map as MapIcon, X, LocateFixed, Loader2 } from 'lucide-react';
 import { useChat } from '../../shared/context/ChatContext';
+import { courtService } from '../../shared/services/api';
 
 // Sửa lỗi icon leaflet mặc định
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -48,7 +49,21 @@ export default function MapPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [mapCenter, setMapCenter] = useState(HCM_CENTER);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [dbVenues, setDbVenues] = useState([]);
   const { isChatOpen } = useChat();
+
+  useEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        // Fetch venues within 50km of HCM Center to get all District 9 venues
+        const data = await courtService.getNearby(HCM_CENTER[0], HCM_CENTER[1], 50);
+        setDbVenues(data);
+      } catch (error) {
+        console.error("Failed to fetch venues:", error);
+      }
+    };
+    fetchVenues();
+  }, []);
 
   // Focus ô tìm kiếm khi load
   const searchInputRef = useRef(null);
@@ -386,6 +401,29 @@ export default function MapPage() {
                 click: () => handleSelectLocation(res),
               }}
             >
+            </Marker>
+          ))}
+
+          {/* Marker cho các địa điểm (Venues) từ Database */}
+          {dbVenues.map(venue => (
+            <Marker 
+              key={`db-${venue.id}`} 
+              position={[venue.latitude, venue.longitude]}
+              eventHandlers={{
+                click: () => {
+                  handleSelectLocation({
+                    place_id: `db-${venue.id}`,
+                    lat: venue.latitude,
+                    lon: venue.longitude,
+                    name: venue.name,
+                    display_name: venue.address,
+                  });
+                },
+              }}
+            >
+              <Tooltip permanent direction="top" offset={[0, -10]} className="font-bold text-xs bg-white/90 dark:bg-gray-800/90 backdrop-blur border-none shadow-md rounded-lg">
+                {venue.name}
+              </Tooltip>
             </Marker>
           ))}
         </MapContainer>

@@ -184,9 +184,6 @@ function Home() {
         currentLocation={currentLocation}
         isDark={isDark}
         setIsDark={setIsDark}
-        onOpenEditProfile={() => {
-          navigate('/gamerooms');
-        }}
         searchKeyword={searchKeyword}
         setSearchKeyword={setSearchKeyword}
         searchPlaceholder="Search teams, posts, or sports..."

@@ -13,6 +13,7 @@ import protonImg from '../../assets/images/ProtonBadmintonCenter.png';
 import eliteImg from '../../assets/images/EliteFootballArena.png';
 import CourtCard from '../home/components/CourtCard';
 import Header from '../../shared/components/Header';
+import { courtService } from '../../shared/services/api';
 
 /* ─── Ưu đãi nhanh ─── */
 
@@ -44,70 +45,19 @@ const MOCK_SPORTS = [
   { id: 4, name: 'Tennis', image: tennisImg, key: 'tennis' },
 ];
 
-/* ─── Dữ liệu mẫu – danh sách sân ─── */
-
-const MOCK_COURTS = [
-  {
-    id: 1,
-    name: 'Proton Badminton Center',
-    rating: 4.8,
-    distance: '1.2 km',
-    district: 'Quận 7',
-    price: '120k/h',
-    sport: 'badminton',
-    image: protonImg,
-  },
-  {
-    id: 2,
-    name: 'Elite Football Arena',
-    rating: 4.6,
-    distance: '2.8 km',
-    district: 'Quận 2',
-    price: '450k/h',
-    sport: 'football',
-    image: eliteImg,
-  },
-  {
-    id: 3,
-    name: 'VinCity Tennis Club',
-    rating: 4.7,
-    distance: '3.5 km',
-    district: 'Quận 9',
-    price: '200k/h',
-    sport: 'tennis',
-    image: null,
-  },
-  {
-    id: 4,
-    name: 'Riverside Pickle Court',
-    rating: 4.5,
-    distance: '1.8 km',
-    district: 'Quận 1',
-    price: '150k/h',
-    sport: 'pickleball',
-    image: null,
-  },
-  {
-    id: 5,
-    name: 'SSport Arena',
-    rating: 4.9,
-    distance: '0.8 km',
-    district: 'Quận 2',
-    price: '100k/h',
-    sport: 'badminton',
-    image: null,
-  },
-  {
-    id: 6,
-    name: 'Thủ Đức Football Park',
-    rating: 4.3,
-    distance: '5.2 km',
-    district: 'Thủ Đức',
-    price: '350k/h',
-    sport: 'football',
-    image: null,
-  },
-];
+/* ─── Skeleton Loading cho Court Card ─── */
+function CourtCardSkeleton() {
+  return (
+    <div className="flex gap-3 bg-gray-50 dark:bg-gray-900 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse">
+      <div className="w-24 h-24 rounded-xl bg-gray-200 dark:bg-gray-700 shrink-0"></div>
+      <div className="flex-1 py-1 space-y-2">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mt-2"></div>
+      </div>
+    </div>
+  );
+}
 
 /* ─── Component chính ─── */
 
@@ -117,7 +67,34 @@ function Bookings() {
   const [selectedSport, setSelectedSport] = useState(null);
   const [currentLocation] = useState('Hồ Chí Minh');
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [courts, setCourts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchCourts = async () => {
+    setIsLoading(true);
+    try {
+      const data = await courtService.getAll();
+      const mappedCourts = data.map(c => ({
+        id: c.id,
+        name: c.venue?.name || c.name, // Display venue name mainly
+        rating: 4.8, // Mockup rating
+        distance: 'Quận 9', // Default mock distance/district
+        district: c.venue?.address?.split(',').pop()?.trim() || 'Quận 9', 
+        price: c.price_per_hour ? `${Math.round(c.price_per_hour / 1000)}k/h` : '100k/h',
+        sport: MOCK_SPORTS.find(s => s.id === c.sport_id || s.name === c.sport?.name)?.key || 'badminton',
+        image: null // API doesn't provide images yet
+      }));
+      setCourts(mappedCourts);
+    } catch (err) {
+      console.error("Lỗi khi tải danh sách sân:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourts();
+  }, []);
 
   useEffect(() => {
     if (isDark) {
@@ -140,8 +117,8 @@ function Bookings() {
     : null;
 
   const filteredCourts = selectedSportKey
-    ? MOCK_COURTS.filter((c) => c.sport === selectedSportKey)
-    : MOCK_COURTS;
+    ? courts.filter((c) => c.sport === selectedSportKey)
+    : courts;
 
   const handleBookCourt = (courtId) => {
     navigate(`/courts/${courtId}`);
@@ -155,9 +132,6 @@ function Bookings() {
         currentLocation={currentLocation}
         isDark={isDark}
         setIsDark={setIsDark}
-        onOpenEditProfile={() => {
-          navigate('/gamerooms');
-        }}
         searchKeyword={searchKeyword}
         setSearchKeyword={setSearchKeyword}
         searchPlaceholder="Search sports, courts or areas..."
@@ -229,7 +203,13 @@ function Bookings() {
             <h2 className="text-gray-900 dark:text-white font-bold text-lg">Nearby Courts</h2>
             <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">View Map</button>
           </div>
-          {filteredCourts.length > 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col gap-3">
+              <CourtCardSkeleton />
+              <CourtCardSkeleton />
+              <CourtCardSkeleton />
+            </div>
+          ) : filteredCourts.length > 0 ? (
             <div className="flex flex-col gap-3">
               {filteredCourts.map((court) => (
                 <CourtCard key={court.id} court={court} onBook={handleBookCourt} />

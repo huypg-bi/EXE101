@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogIn, LogOut, Moon, Sun, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import EditProfileModal from '../../features/profile/EditProfileModal';
 
 import gpsImg from '../../assets/svgs/gps.svg';
 import arrowDownImg from '../../assets/svgs/arrow_down.svg';
@@ -23,17 +24,18 @@ function Header({
   currentLocation = 'Hồ Chí Minh', 
   isDark, 
   setIsDark, 
-  onOpenEditProfile,
   searchKeyword,
   setSearchKeyword,
   searchPlaceholder = "Search..."
 }) {
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, updateProfile } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   const getAvatarLetter = () => {
-    return (user?.profile?.full_name || user?.email || 'U').charAt(0).toUpperCase();
+    const name = user?.profile?.full_name || user?.email || '';
+    return name ? name.charAt(0).toUpperCase() : '';
   };
 
   return (
@@ -96,7 +98,7 @@ function Header({
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900 dark:text-white leading-tight">
-                          {user?.profile?.full_name || 'Người dùng mới'}
+                          {user?.profile?.full_name || user?.email || ''}
                         </h4>
                         <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
                       </div>
@@ -127,17 +129,16 @@ function Header({
                     </div>
                     
                     <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 space-y-2">
-                      {onOpenEditProfile && (
-                        <button 
-                          onClick={() => {
-                            setIsProfileOpen(false);
-                            onOpenEditProfile();
-                          }}
-                          className="w-full flex items-center justify-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-bold py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                        >
-                          Chỉnh sửa thông tin
-                        </button>
-                      )}
+                      {/* Nút chỉnh sửa thông tin luôn được hiển thị vì Modal giờ nằm trong Header */}
+                      <button 
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setIsEditProfileOpen(true);
+                        }}
+                        className="w-full flex items-center justify-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-bold py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                      >
+                        Chỉnh sửa thông tin
+                      </button>
                       <button 
                         onClick={() => {
                           logout();
@@ -170,6 +171,16 @@ function Header({
           />
         </div>
       )}
+
+      {/* Edit Profile Modal (Global) */}
+      <EditProfileModal 
+        isOpen={isEditProfileOpen} 
+        onClose={() => setIsEditProfileOpen(false)}
+        user={user}
+        onSave={(data) => {
+          updateProfile(data);
+        }}
+      />
     </header>
   );
 }

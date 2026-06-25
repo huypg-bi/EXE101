@@ -34,7 +34,17 @@ function MainLayout({ children }) {
 }
 
 function ProtectedRoute({ children }) {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, loading } = useAuth();
+    
+    if (loading) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-950">
+                <div className="w-12 h-12 border-4 border-blue-200 dark:border-blue-900 border-t-blue-600 dark:border-t-blue-500 rounded-full animate-spin mb-4"></div>
+                <p className="text-gray-500 dark:text-gray-400 font-medium animate-pulse">Đang kiểm tra phiên đăng nhập...</p>
+            </div>
+        );
+    }
+
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
