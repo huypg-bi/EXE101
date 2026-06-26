@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Moon, Sun, LogIn, Sparkles, LogOut, Crown } from 'lucide-react';
 import gpsImg from '../../assets/svgs/gps.svg';
 import arrowDownImg from '../../assets/svgs/arrow_down.svg';
@@ -62,6 +63,7 @@ function CourtCardSkeleton() {
 /* ─── Component chính ─── */
 
 function Bookings() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedSport, setSelectedSport] = useState(null);
@@ -134,7 +136,7 @@ function Bookings() {
         setIsDark={setIsDark}
         searchKeyword={searchKeyword}
         setSearchKeyword={setSearchKeyword}
-        searchPlaceholder="Search sports, courts or areas..."
+        searchPlaceholder={t('header.searchPlaceholder', 'Tìm kiếm sân, người chơi hoặc môn...')}
       />
 
 
@@ -144,8 +146,8 @@ function Bookings() {
         {/* ── Ưu đãi nhanh ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-gray-900 dark:text-white font-bold text-lg">Flash Deals</h2>
-            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">See All</button>
+            <h2 className="text-gray-900 dark:text-white font-bold text-lg">{t('bookings.flashDeals', 'Flash Deals')}</h2>
+            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">{t('bookings.seeAll', 'See All')}</button>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
             {MOCK_FLASH_DEALS.map((deal) => (
@@ -190,7 +192,7 @@ function Bookings() {
                   ? 'text-blue-600 dark:text-blue-400'
                   : 'text-gray-600 dark:text-gray-400'
                 }`}>
-                  {sport.name}
+                  {t(`sports.${sport.key}`, sport.name)}
                 </span>
               </button>
             ))}
@@ -200,8 +202,8 @@ function Bookings() {
         {/* ── Nearby Courts ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-gray-900 dark:text-white font-bold text-lg">Nearby Courts</h2>
-            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">View Map</button>
+            <h2 className="text-gray-900 dark:text-white font-bold text-lg">{t('bookings.nearbyCourts', 'Nearby Courts')}</h2>
+            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">{t('bookings.viewMap', 'View Map')}</button>
           </div>
           {isLoading ? (
             <div className="flex flex-col gap-3">
@@ -220,8 +222,8 @@ function Bookings() {
               <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
                 <span className="text-2xl">🏟️</span>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">No courts found for this sport</p>
-              <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">Try selecting a different sport</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{t('bookings.noCourts', 'No courts found for this sport')}</p>
+              <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">{t('bookings.tryDifferent', 'Try selecting a different sport')}</p>
             </div>
           )}
         </section>

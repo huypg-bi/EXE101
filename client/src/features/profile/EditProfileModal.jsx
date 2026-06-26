@@ -7,10 +7,10 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
   const { t } = useTranslation();
   const SKILL_LEVELS = [
     { value: 'Chưa biết', label: t('header.unknown') },
-    { value: 'Beginner', label: 'Beginner' },
-    { value: 'Intermediate', label: 'Intermediate' },
-    { value: 'Advanced', label: 'Advanced' },
-    { value: 'Expert', label: 'Expert' }
+    { value: 'Beginner', label: t('sports.beginner', 'Beginner') },
+    { value: 'Intermediate', label: t('sports.intermediate', 'Intermediate') },
+    { value: 'Advanced', label: t('sports.advanced', 'Advanced') },
+    { value: 'Expert', label: t('sports.expert', 'Expert') }
   ];
 
   const [formData, setFormData] = useState({

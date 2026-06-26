@@ -218,7 +218,7 @@ function Home() {
                   ? 'text-blue-600 dark:text-blue-400'
                   : 'text-gray-600 dark:text-gray-400'
                 }`}>
-                  {sport.name}
+                  {t(`sports.${sport.key}`, sport.name)}
                 </span>
               </button>
             ))}

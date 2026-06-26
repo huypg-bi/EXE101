@@ -146,14 +146,14 @@ function Header({
                           <div key={sportName} className="flex items-center justify-between text-sm">
                             <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
                               <img src={icon} alt={sportName} className="w-5 h-5 rounded-md object-cover" />
-                              {sportName}
+                              {t(`sports.${sportName.toLowerCase()}`, sportName)}
                             </span>
                             <span className={`font-bold px-2 py-0.5 rounded-md text-xs ${
-                              level !== t('header.unknown')
+                              level !== t('header.unknown') && level !== 'Chưa biết'
                                 ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
                                 : 'text-gray-500 bg-gray-100 dark:bg-gray-800'
                             }`}>
-                              {level}
+                              {level === t('header.unknown') || level === 'Chưa biết' ? t('header.unknown') : t(`sports.${level.toLowerCase()}`, level)}
                             </span>
                           </div>
                         );

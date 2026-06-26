@@ -58,7 +58,7 @@ function RoomCard({ room, onJoin, onCancel, onApprove, onEdit, onChat, t }) {
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-gray-900 dark:text-white font-bold text-base line-clamp-1">{title || ''}</h3>
           <span className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${LEVEL_STYLES[level] ?? 'bg-gray-100 text-gray-600'}`}>
-            {level}
+            {t(`sports.${level?.toLowerCase()}`, level)}
           </span>
         </div>
         
@@ -73,7 +73,7 @@ function RoomCard({ room, onJoin, onCancel, onApprove, onEdit, onChat, t }) {
         )}
 
         <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 pt-1">
-          {sportLabel} • {time}
+          {t(`sports.${room.sport}`, sportLabel)} • {time}
         </p>
         
         <p className={`text-xs font-bold pt-0.5 ${slotsLeft <= 1 ? 'text-red-500' : 'text-green-600 dark:text-green-400'}`}>
@@ -335,7 +335,9 @@ function GameRoom() {
                   <img src={sport.image} alt={sport.name} className="w-full h-full object-cover" />
                   {selectedSport === sport.id && <div className="absolute inset-0 rounded-full border-[3px] border-blue-500 pointer-events-none"></div>}
                 </div>
-                <span className={`text-xs font-medium ${selectedSport === sport.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`}>{sport.name}</span>
+                <span className={`text-xs font-medium ${selectedSport === sport.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                  {t(`sports.${sport.key}`, sport.name)}
+                </span>
               </button>
             ))}
           </div>
