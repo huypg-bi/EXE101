@@ -143,7 +143,15 @@
     "book": "Book",
     "noCourts": "No courts found for this sport",
     "tryDifferent": "Try selecting a different sport",
-    "from": "from"
+    "from": "from",
+    "myBookings": "My Bookings",
+    "statusPending": "Pending",
+    "statusConfirmed": "Confirmed",
+    "statusCancelled": "Cancelled",
+    "statusCompleted": "Completed",
+    "totalPrice": "Total Price",
+    "noBookings": "You don't have any bookings yet.",
+    "bookingId": "Booking ID"
   },
   "team": {
     "myTeams": "My Teams",

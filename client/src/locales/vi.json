@@ -143,7 +143,15 @@
     "book": "Đặt sân",
     "noCourts": "Không tìm thấy sân cho môn thể thao này",
     "tryDifferent": "Thử chọn một môn khác",
-    "from": "từ"
+    "from": "từ",
+    "myBookings": "Lịch đã đặt",
+    "statusPending": "Chờ xác nhận",
+    "statusConfirmed": "Đã xác nhận",
+    "statusCancelled": "Đã hủy",
+    "statusCompleted": "Đã hoàn thành",
+    "totalPrice": "Tổng tiền",
+    "noBookings": "Bạn chưa có lịch đặt sân nào.",
+    "bookingId": "Mã đặt sân"
   },
   "team": {
     "myTeams": "Đội của tôi",
