@@ -14,6 +14,7 @@ import eliteImg from '../../assets/images/EliteFootballArena.png';
 import PostCard from './components/PostCard';
 import { useChat } from '../../shared/context/ChatContext';
 import Header from '../../shared/components/Header';
+import { useTranslation } from 'react-i18next';
 
 /* ─── Danh mục môn thể thao ─── */
 
@@ -125,6 +126,7 @@ const MOCK_POSTS = [
 /* ─── Component chính ─── */
 
 function Home() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { startChat } = useChat(); // Dùng context để mở chat
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -186,7 +188,7 @@ function Home() {
         setIsDark={setIsDark}
         searchKeyword={searchKeyword}
         setSearchKeyword={setSearchKeyword}
-        searchPlaceholder="Search teams, posts, or sports..."
+        searchPlaceholder={t('home.searchPlaceholder')}
       />
 
 
@@ -226,8 +228,8 @@ function Home() {
         {/* ── Top Teams ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-gray-900 dark:text-white font-bold text-lg">Top Teams</h2>
-            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">See All</button>
+            <h2 className="text-gray-900 dark:text-white font-bold text-lg">{t('home.topTeams')}</h2>
+            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">{t('home.seeAll')}</button>
           </div>
           {filteredTeams.length > 0 ? (
             <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
@@ -248,7 +250,7 @@ function Home() {
                   <div>
                     <h3 className="text-white font-bold text-sm leading-tight mb-1">{team.name}</h3>
                     <p className="text-white/80 text-xs flex items-center gap-1">
-                       👥 {team.members} members
+                       👥 {team.members} {t('home.members')}
                     </p>
                   </div>
                 </div>
@@ -256,7 +258,7 @@ function Home() {
             </div>
           ) : (
              <div className="py-6 text-center text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-               No top teams found for this sport.
+               {t('home.noTopTeams')}
              </div>
           )}
         </section>
@@ -264,8 +266,8 @@ function Home() {
         {/* ── Posts / Bảng tin ── */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-gray-900 dark:text-white font-bold text-lg">Recent Posts</h2>
-            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">New Post</button>
+            <h2 className="text-gray-900 dark:text-white font-bold text-lg">{t('home.recentPosts')}</h2>
+            <button className="text-blue-600 dark:text-blue-400 text-sm font-medium">{t('home.newPost')}</button>
           </div>
           {filteredPosts.length > 0 ? (
             <div className="flex flex-col gap-4">
@@ -278,8 +280,8 @@ function Home() {
               <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-4">
                 <span className="text-2xl">📝</span>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">No posts for this sport yet.</p>
-              <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">Be the first to post!</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{t('home.noPosts')}</p>
+              <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">{t('home.beTheFirst')}</p>
             </div>
           )}
         </section>

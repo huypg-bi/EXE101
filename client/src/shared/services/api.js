@@ -48,6 +48,8 @@ export const gameRoomService = {
   join: (roomId) => apiClient.post(`/gamerooms/${roomId}/join`),
   leave: (roomId) => apiClient.post(`/gamerooms/${roomId}/leave`),
   create: (data) => apiClient.post('/gamerooms', data),
+  approveParticipant: (roomId, userId, status) => 
+    apiClient.patch(`/gamerooms/${roomId}/participants/${userId}/status`, { status }),
 };
 
 export const bookingService = {

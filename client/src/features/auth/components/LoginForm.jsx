@@ -37,8 +37,10 @@ const SOCIAL_BUTTONS = [
 ];
 
 import { useAuth } from '../../../shared/context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 function LoginForm({ onShowRegister }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
@@ -58,7 +60,7 @@ function LoginForm({ onShowRegister }) {
     const emailErr = validateEmail(form.email);
     if (emailErr) errs.email = emailErr;
     if (!form.password)
-      errs.password = 'Vui lòng nhập mật khẩu';
+      errs.password = t('auth.passwordRequired');
     if (Object.keys(errs).length) { setErrors(errs); return; }
     
     setErrors({});
@@ -70,7 +72,7 @@ function LoginForm({ onShowRegister }) {
       // Wait for success animation before navigating
       setTimeout(() => navigate('/'), 1500);
     } catch (err) {
-      setErrors({ general: err.message || 'Email hoặc mật khẩu chưa đúng' });
+      setErrors({ general: err.message || t('auth.invalidCredentials') });
     } finally {
       setIsLoading(false);
     }
@@ -87,8 +89,8 @@ function LoginForm({ onShowRegister }) {
         <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(255,255,255,0.4)] animate-[bounce_1s_ease-in-out]">
           <CheckCircle className="w-12 h-12 text-blue-600" />
         </div>
-        <h2 className="text-3xl font-black text-white mb-2 animate-in slide-in-from-bottom-4 duration-500 delay-150">Đăng nhập<br/>Thành công!</h2>
-        <p className="text-blue-100 mt-2 animate-in fade-in duration-500 delay-300">Đang chuyển hướng...</p>
+        <h2 className="text-3xl font-black text-white mb-2 animate-in slide-in-from-bottom-4 duration-500 delay-150 whitespace-pre-line">{t('auth.loginSuccessTitle')}</h2>
+        <p className="text-blue-100 mt-2 animate-in fade-in duration-500 delay-300">{t('auth.redirecting')}</p>
       </div>
     );
   }
@@ -98,19 +100,19 @@ function LoginForm({ onShowRegister }) {
       <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-black/10">
         <Zap className="w-8 h-8 text-blue-600 fill-blue-600" />
       </div>
-      <h2 className="text-2xl font-bold text-white">Đăng nhập</h2>
+      <h2 className="text-2xl font-bold text-white">{t('auth.login')}</h2>
       <p className="text-blue-100/80 text-sm mt-1 mb-8 text-center">
-        Chào mừng trở lại với Proton Sports
+        {t('auth.welcomeBack')}
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col w-full space-y-4">
         <div>
-          <label className="block text-sm font-semibold text-blue-100 mb-1.5">Email</label>
+          <label className="block text-sm font-semibold text-blue-100 mb-1.5">{t('auth.email')}</label>
           <input
             type="email"
             value={form.email}
             onChange={onChange('email')}
-            placeholder="your@email.com"
+            placeholder={t('auth.emailPlaceholder')}
             className={inputCls('email')}
           />
           {errors.email && <p className="text-red-300 text-xs mt-1.5 pl-1 font-medium">{errors.email}</p>}
@@ -118,15 +120,15 @@ function LoginForm({ onShowRegister }) {
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-sm font-semibold text-blue-100">Mật khẩu</label>
-            <button type="button" className="text-xs font-medium text-white/70 hover:text-white transition-colors">Quên mật khẩu?</button>
+            <label className="block text-sm font-semibold text-blue-100">{t('auth.password')}</label>
+            <button type="button" className="text-xs font-medium text-white/70 hover:text-white transition-colors">{t('auth.forgotPassword')}</button>
           </div>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               value={form.password}
               onChange={onChange('password')}
-              placeholder="Nhập mật khẩu"
+              placeholder={t('auth.passwordPlaceholder')}
               className={inputCls('password') + " pr-12"}
             />
             <button
@@ -149,7 +151,7 @@ function LoginForm({ onShowRegister }) {
           disabled={isLoading}
           className="w-full bg-white hover:bg-gray-50 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-blue-600 font-bold py-3.5 rounded-2xl transition-all shadow-lg text-base mt-4"
         >
-          {isLoading ? 'Đang xử lý...' : 'Đăng nhập'}
+          {isLoading ? t('auth.processing') : t('auth.login')}
         </button>
       </form>
 
@@ -157,7 +159,7 @@ function LoginForm({ onShowRegister }) {
         <div className="flex items-center gap-3 mb-5 opacity-70">
           <div className="flex-1 h-px bg-white/30" />
           <span className="text-white text-[10px] font-bold tracking-widest uppercase">
-            Hoặc đăng nhập qua
+            {t('auth.loginWith')}
           </span>
           <div className="flex-1 h-px bg-white/30" />
         </div>
@@ -177,13 +179,13 @@ function LoginForm({ onShowRegister }) {
 
       <div className="mt-8 text-center bg-black/10 w-[calc(100%+3rem)] -mb-8 py-5 rounded-b-[2.5rem]">
         <p className="text-blue-100 text-sm font-medium">
-          Chưa có tài khoản?{' '}
+          {t('auth.dontHaveAccount')}{' '}
           <button 
             type="button" 
             onClick={onShowRegister}
             className="text-white hover:text-blue-200 font-bold underline transition-colors"
           >
-            Đăng ký ngay
+            {t('auth.registerNow')}
           </button>
         </p>
       </div>

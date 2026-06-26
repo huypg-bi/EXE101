@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogIn, LogOut, Moon, Sun, Sparkles } from 'lucide-react';
+import { LogIn, LogOut, Moon, Sun, Sparkles, Map as MapIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import EditProfileModal from '../../features/profile/EditProfileModal';
 
@@ -26,8 +27,11 @@ function Header({
   setIsDark, 
   searchKeyword,
   setSearchKeyword,
-  searchPlaceholder = "Search..."
+  className = '',
+  isSidebarOpen = false,
+  onToggleSidebar
 }) {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, user, logout, updateProfile } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -38,22 +42,48 @@ function Header({
     return name ? name.charAt(0).toUpperCase() : '';
   };
 
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'vi' : 'en';
+    i18n.changeLanguage(newLang);
+    // LanguageDetector saves it automatically
+  };
+
   return (
-    <header className="sticky top-0 bg-white dark:bg-gray-900 z-40 px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-800 shadow-sm">
-      <div className="flex items-center justify-between mb-3">
+    <header className={`sticky top-0 bg-white dark:bg-gray-900 z-40 px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-800 shadow-sm ${className}`}>
+      <div className={`flex items-center justify-between ${setSearchKeyword ? 'mb-3' : ''}`}>
         {/* Chọn vị trí */}
-        <button className="flex items-center gap-1.5">
-          <img src={gpsImg} alt="location" className="w-4 h-4 shrink-0" />
-          <span className="font-semibold text-sm text-gray-800 dark:text-gray-100">{currentLocation}</span>
-          <img src={arrowDownImg} alt="expand" className="w-3.5 h-3.5 dark:invert" />
-        </button>
+        <div className="flex items-center">
+          {onToggleSidebar && (
+            <button 
+              onClick={onToggleSidebar}
+              title="Toggle Sidebar"
+              className={`absolute top-[11px] w-[34px] h-[34px] bg-[#CDFF00] rounded-[10px] flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm shrink-0 z-50 ${isSidebarOpen ? '-left-[50px]' : 'left-[16px]'}`}
+            >
+              <MapIcon className="w-4 h-4 text-gray-900" />
+            </button>
+          )}
+          <button className={`flex items-center gap-1.5 transition-all duration-300 ${onToggleSidebar ? (isSidebarOpen ? 'ml-0' : 'ml-[46px]') : ''}`}>
+            <img src={gpsImg} alt="location" className="w-4 h-4 shrink-0" />
+            <span className="font-semibold text-sm text-gray-800 dark:text-gray-100">{currentLocation}</span>
+            <img src={arrowDownImg} alt="expand" className="w-3.5 h-3.5 dark:invert" />
+          </button>
+        </div>
 
         {/* Các icon bên phải */}
         <div className="flex items-center gap-2">
+          {/* Nút chuyển đổi Ngôn ngữ */}
+          <button
+            onClick={toggleLanguage}
+            className="p-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center font-bold text-xs w-8 h-8 text-gray-700 dark:text-gray-300"
+            title="Switch Language"
+          >
+            {i18n.language === 'en' ? 'EN' : 'VN'}
+          </button>
+
           {/* Chuyển đổi giao diện sáng/tối */}
           <button
             onClick={() => setIsDark((d) => !d)}
-            className="p-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center w-8 h-8"
             aria-label="Toggle theme"
           >
             {isDark
@@ -105,11 +135,13 @@ function Header({
                     </div>
                     
                     <div className="space-y-3">
-                      <h5 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Trình độ môn thể thao</h5>
+                      <h5 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                        {t('header.sportsLevel')}
+                      </h5>
                       
                       {Object.entries(SPORT_ICONS).map(([sportName, icon]) => {
                         const userSport = user?.sports?.find(s => s.sport.name === sportName);
-                        const level = userSport ? userSport.skill_level : 'Chưa biết';
+                        const level = userSport ? userSport.skill_level : t('header.unknown');
                         return (
                           <div key={sportName} className="flex items-center justify-between text-sm">
                             <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
@@ -117,7 +149,7 @@ function Header({
                               {sportName}
                             </span>
                             <span className={`font-bold px-2 py-0.5 rounded-md text-xs ${
-                              level !== 'Chưa biết' 
+                              level !== t('header.unknown')
                                 ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
                                 : 'text-gray-500 bg-gray-100 dark:bg-gray-800'
                             }`}>
@@ -129,7 +161,6 @@ function Header({
                     </div>
                     
                     <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 space-y-2">
-                      {/* Nút chỉnh sửa thông tin luôn được hiển thị vì Modal giờ nằm trong Header */}
                       <button 
                         onClick={() => {
                           setIsProfileOpen(false);
@@ -137,7 +168,7 @@ function Header({
                         }}
                         className="w-full flex items-center justify-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-bold py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
                       >
-                        Chỉnh sửa thông tin
+                        {t('header.editProfile')}
                       </button>
                       <button 
                         onClick={() => {
@@ -147,7 +178,7 @@ function Header({
                         className="w-full flex items-center justify-center gap-2 text-sm text-red-600 dark:text-red-500 font-bold py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
-                        Đăng xuất
+                        {t('header.logout')}
                       </button>
                     </div>
                   </div>
@@ -166,7 +197,7 @@ function Header({
             type="text"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            placeholder={searchPlaceholder}
+            placeholder={t('header.searchPlaceholder')}
             className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 outline-none"
           />
         </div>

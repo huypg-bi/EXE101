@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { Search, MapPin, Navigation, Map as MapIcon, X, LocateFixed, Loader2 } from 'lucide-react';
 import { useChat } from '../../shared/context/ChatContext';
 import { courtService } from '../../shared/services/api';
+import Header from '../../shared/components/Header';
 
 // Sửa lỗi icon leaflet mặc định
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -48,9 +49,20 @@ export default function MapPage() {
   const [userLocation, setUserLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mapCenter, setMapCenter] = useState(HCM_CENTER);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dbVenues, setDbVenues] = useState([]);
   const { isChatOpen } = useChat();
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') !== 'light');
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -194,6 +206,17 @@ export default function MapPage() {
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative">
       
+      {/* HEADER TÍCH HỢP CHO BẢN ĐỒ */}
+      <div className={`absolute top-0 right-0 z-[1002] transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-full md:w-[calc(100%-400px)] hidden md:block' : 'w-full'}`}>
+        <Header 
+          isDark={isDark} 
+          setIsDark={setIsDark} 
+          className="!bg-white/80 dark:!bg-gray-900/80 backdrop-blur-md border-b-0 shadow-none !py-[10px] transition-all duration-300"
+          isSidebarOpen={isSidebarOpen}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
+      </div>
+
       {/* SIDEBAR BÊN TRÁI (Giống Google Maps) */}
       <div 
         className={`w-full md:w-[400px] h-full bg-white dark:bg-gray-900 shadow-2xl flex flex-col z-[1000] absolute top-0 left-0 transition-transform duration-300 ease-in-out ${
@@ -204,12 +227,13 @@ export default function MapPage() {
         {/* Header & Search Bar */}
         <div className="p-4 border-b border-gray-100 dark:border-gray-800 shrink-0">
           <div className="flex items-center gap-3 mb-4">
+            {/* Nút đóng Sidebar trên Mobile */}
             <button 
               onClick={() => setIsSidebarOpen(false)}
-              className="w-10 h-10 rounded-xl bg-[#CDFF00] flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-transform"
+              className="md:hidden w-[34px] h-[34px] rounded-[10px] bg-[#CDFF00] flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-transform"
               title="Đóng sidebar"
             >
-              <MapIcon className="w-5 h-5 text-gray-900" />
+              <MapIcon className="w-4 h-4 text-gray-900" />
             </button>
             <div>
               <h1 className="font-black text-gray-900 dark:text-white text-lg">Khám phá</h1>
@@ -332,19 +356,6 @@ export default function MapPage() {
 
       {/* KHU VỰC BẢN ĐỒ */}
       <div className="flex-1 relative z-0 h-full w-full">
-        {/* Nút mở Sidebar khi bị ẩn */}
-        {!isSidebarOpen && (
-          <div className="absolute left-4 top-4 z-[1000]">
-            <button 
-              onClick={() => setIsSidebarOpen(true)}
-              title="Mở thanh tìm kiếm"
-              className="w-12 h-12 bg-[#CDFF00] rounded-2xl shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
-            >
-              <MapIcon className="w-6 h-6 text-gray-900" />
-            </button>
-          </div>
-        )}
-
         <div 
           className="absolute right-6 z-[1000] transition-all duration-300 ease-in-out"
           style={{ bottom: '80px' }}

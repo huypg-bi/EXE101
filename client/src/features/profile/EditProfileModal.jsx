@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Camera, X, Save, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const ALL_SPORTS = ['Badminton', 'Tennis', 'Football', 'Pickleball'];
-const SKILL_LEVELS = [
-  { value: 'Chưa biết', label: 'Chưa biết' },
-  { value: 'Beginner', label: 'Beginner' },
-  { value: 'Intermediate', label: 'Intermediate' },
-  { value: 'Advanced', label: 'Advanced' },
-  { value: 'Expert', label: 'Expert' }
-];
-
 function EditProfileModal({ isOpen, onClose, user, onSave }) {
+  const { t } = useTranslation();
+  const SKILL_LEVELS = [
+    { value: 'Chưa biết', label: t('header.unknown') },
+    { value: 'Beginner', label: 'Beginner' },
+    { value: 'Intermediate', label: 'Intermediate' },
+    { value: 'Advanced', label: 'Advanced' },
+    { value: 'Expert', label: 'Expert' }
+  ];
+
   const [formData, setFormData] = useState({
     name: '',
     sports: {}
@@ -94,7 +96,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
           </svg>
         </button>
 
-        <h2 className="text-xl font-black text-gray-900 dark:text-white mb-5 text-center mt-2">Chỉnh sửa thông tin</h2>
+        <h2 className="text-xl font-black text-gray-900 dark:text-white mb-5 text-center mt-2">{t('profile.editTitle')}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4 max-h-[60vh] overflow-y-auto scrollbar-hide px-1 pb-2">
           
@@ -129,26 +131,26 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
               </div>
             </div>
             <span className={`text-[10px] mt-3 font-bold uppercase tracking-wider transition-colors duration-500 ${isSuccess ? 'text-green-500 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 cursor-pointer'}`}>
-              {isSuccess ? 'Cập nhật thành công' : 'Đổi ảnh đại diện'}
+              {isSuccess ? t('profile.updateSuccess') : t('profile.changeAvatar')}
             </span>
           </div>
 
           {/* Form Content (dims on success) */}
           <div className={`space-y-4 transition-all duration-700 ${isSuccess ? 'opacity-30 blur-sm pointer-events-none' : 'opacity-100'}`}>
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5 ml-1">Họ và tên</label>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5 ml-1">{t('profile.fullName')}</label>
               <input 
                 type="text" 
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" 
-                placeholder="Nhập họ và tên..."
+                placeholder={t('profile.enterFullName')}
               />
             </div>
 
             <div className="pt-2">
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">Trình độ môn thể thao</label>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 ml-1">{t('profile.sportsSkill')}</label>
               <div className="space-y-2.5">
                 {ALL_SPORTS.map(sport => (
                   <div key={sport} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 p-2 pl-4 rounded-2xl border border-gray-100 dark:border-gray-700/50">
@@ -171,7 +173,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] mt-6"
             >
-              Lưu thay đổi
+              {t('profile.save')}
             </button>
           </div>
         </form>
