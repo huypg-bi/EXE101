@@ -1,7 +1,7 @@
-import badmintonImg from '../../../assets/svgs/badminton.svg';
-import footballImg from '../../../assets/svgs/football.svg';
-import pickleballImg from '../../../assets/svgs/pickleball.svg';
-import tennisImg from '../../../assets/svgs/tennis.svg';
+import badmintonImg from '../../../assets/icons/badminton.png';
+import footballImg from '../../../assets/icons/football.png';
+import pickleballImg from '../../../assets/icons/pickelball.png';
+import tennisImg from '../../../assets/icons/tennis.png';
 import locatedImg from '../../../assets/svgs/locate.svg';
 
 const SPORT_GRADIENTS = {
@@ -18,7 +18,10 @@ const SPORT_IMAGE = {
   tennis: tennisImg,
 };
 
+import { useTranslation } from 'react-i18next';
+
 function CourtCard({ court, onBook }) {
+  const { t } = useTranslation();
   const { id, name, rating, distance, district, price, sport, image } = court;
 
   return (
@@ -47,7 +50,7 @@ function CourtCard({ court, onBook }) {
           {distance} • {district}
         </p>
         <p className="text-blue-600 dark:text-blue-400 text-sm font-bold mt-1.5">
-          from <span>{price}</span>
+          {t('bookings.from', 'from')} <span>{price}</span>
         </p>
       </div>
 
@@ -56,7 +59,7 @@ function CourtCard({ court, onBook }) {
         onClick={() => onBook?.(id)}
         className="shrink-0 bg-[#CDFF00] text-gray-900 text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#b8e800] active:scale-95 transition-all"
       >
-        Book
+        {t('bookings.book', 'Book')}
       </button>
     </div>
   );
