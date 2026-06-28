@@ -11,6 +11,8 @@ import CourtDetailPage from '../features/courts/pages/CourtDetailPage.jsx';
 import BottomNavigation from '../shared/components/BottomNavigation.jsx';
 import ChatPanel from '../shared/components/ChatPanel.jsx';
 import { ChatProvider, useChat } from '../shared/context/ChatContext.jsx';
+import LandingPage from '../features/landing/Landing.jsx';
+import PublicLayout from '../shared/layouts/PublicLayout.jsx';
 
 function MainLayout({ children }) {
     const { isChatOpen } = useChat();
@@ -56,9 +58,12 @@ function AppRoutes() {
         <BrowserRouter>
             <ChatProvider>
                 <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Navigate to="/login" replace />} />
-                    <Route path="/" element={<ProtectedRoute><MainLayout><Home /></MainLayout></ProtectedRoute>} />
+                    <Route element={<PublicLayout />}>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Login defaultIsRegister={true} />} />
+                        <Route path="/" element={<LandingPage />} />
+                    </Route>
+                    <Route path="/home" element={<ProtectedRoute><MainLayout><Home /></MainLayout></ProtectedRoute>} />
                     <Route path="/tournaments" element={<ProtectedRoute><MainLayout><Tournament /></MainLayout></ProtectedRoute>} />
                     <Route path="/matches" element={<ProtectedRoute><MainLayout><GameRoom /></MainLayout></ProtectedRoute>} />
                     <Route path="/bookings" element={<ProtectedRoute><MainLayout><Bookings /></MainLayout></ProtectedRoute>} />
@@ -66,7 +71,7 @@ function AppRoutes() {
                     <Route path="/team" element={<ProtectedRoute><MainLayout><Team /></MainLayout></ProtectedRoute>} />
                     {/* Trang chi tiết sân — không có BottomNavigation */}
                     <Route path="/courts/:id" element={<ProtectedRoute><CourtDetailPage /></ProtectedRoute>} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
             </ChatProvider>
         </BrowserRouter>

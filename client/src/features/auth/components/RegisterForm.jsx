@@ -60,16 +60,16 @@ function RegisterForm({ onShowLogin }) {
   if (isSuccess) {
     return (
       <div className="flex flex-col items-center justify-center w-full h-full text-center animate-in fade-in duration-500">
-        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(255,255,255,0.4)] animate-[bounce_1s_ease-in-out]">
-          <CheckCircle className="w-12 h-12 text-blue-600" />
+        <div className="w-24 h-24 bg-white/5 border border-white/10 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_var(--theme-glow)] animate-[bounce_1s_ease-in-out] theme-transition">
+          <CheckCircle className="w-12 h-12 text-brand-primary theme-transition" />
         </div>
         <h2 className="text-3xl font-black text-white mb-2 animate-in slide-in-from-bottom-4 duration-500 delay-150">Đăng ký<br/>Thành công!</h2>
-        <p className="text-blue-100 text-sm mb-8 px-4 animate-in fade-in duration-500 delay-300">
+        <p className="text-gray-400 text-sm mb-8 px-4 animate-in fade-in duration-500 delay-300">
           Tài khoản của bạn đã sẵn sàng. Hãy đăng nhập để bắt đầu!
         </p>
         <button
           onClick={onShowLogin}
-          className="w-full bg-white hover:bg-gray-50 active:scale-[0.98] text-blue-600 font-bold py-3.5 rounded-2xl transition-all shadow-lg text-base animate-in slide-in-from-bottom-4 duration-500 delay-500"
+          className="w-full bg-brand-primary hover:opacity-80 active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl transition-all shadow-[0_0_20px_var(--theme-glow)] text-base animate-in slide-in-from-bottom-4 duration-500 delay-500 theme-transition"
         >
           Quay lại Đăng nhập
         </button>
@@ -81,19 +81,19 @@ function RegisterForm({ onShowLogin }) {
     <div className="flex flex-col items-center w-full h-full my-auto">
       <div className="flex flex-col flex-1 w-full pt-2">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-black/10">
-            <UserPlus className="w-6 h-6 text-blue-600" />
+          <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center shrink-0 shadow-[0_0_20px_var(--theme-glow)] theme-transition">
+            <UserPlus className="w-6 h-6 text-brand-primary theme-transition" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-white">Tạo tài khoản</h2>
-            <p className="text-blue-100/80 text-xs mt-0.5">Hành trình bắt đầu từ đây</p>
+            <p className="text-gray-400 text-xs mt-0.5">Hành trình bắt đầu từ đây</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col w-full space-y-3 pb-4">
           {/* Họ và tên */}
           <div>
-            <label className="block text-xs font-semibold text-blue-100 mb-1">Họ và tên</label>
+            <label className="block text-xs font-semibold text-gray-300 mb-1">Họ và tên</label>
             <input
               type="text"
               value={form.name}
@@ -106,7 +106,7 @@ function RegisterForm({ onShowLogin }) {
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-semibold text-blue-100 mb-1">Email</label>
+            <label className="block text-xs font-semibold text-gray-300 mb-1">Email</label>
             <input
               type="email"
               value={form.email}
@@ -120,7 +120,7 @@ function RegisterForm({ onShowLogin }) {
           <div className="grid grid-cols-2 gap-3">
             {/* Mật khẩu */}
             <div>
-              <label className="block text-xs font-semibold text-blue-100 mb-1">Mật khẩu</label>
+              <label className="block text-xs font-semibold text-gray-300 mb-1">Mật khẩu</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -142,7 +142,7 @@ function RegisterForm({ onShowLogin }) {
 
             {/* Xác nhận mật khẩu */}
             <div>
-              <label className="block text-xs font-semibold text-blue-100 mb-1">Xác nhận MK</label>
+              <label className="block text-xs font-semibold text-gray-300 mb-1">Xác nhận MK</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
@@ -170,20 +170,20 @@ function RegisterForm({ onShowLogin }) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-white hover:bg-gray-50 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-blue-600 font-bold py-3.5 rounded-xl transition-all shadow-lg text-sm mt-3"
+            className="w-full bg-brand-primary hover:opacity-80 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-all shadow-[0_0_20px_var(--theme-glow)] text-sm mt-3 theme-transition"
           >
             {isLoading ? 'Đang xử lý...' : 'Hoàn tất Đăng ký'}
           </button>
         </form>
       </div>
 
-      <div className="mt-auto text-center bg-black/10 w-[calc(100%+3rem)] sm:w-[calc(100%+4rem)] -mb-6 sm:-mb-8 py-5 rounded-b-[2.5rem]">
-        <p className="text-blue-100 text-sm font-medium">
+      <div className="mt-auto text-center bg-black/30 w-[calc(100%+3rem)] sm:w-[calc(100%+4rem)] -mb-6 sm:-mb-8 py-5 rounded-b-[2.5rem] border-t border-white/5">
+        <p className="text-gray-400 text-sm font-medium">
           Đã có tài khoản?{' '}
           <button 
             type="button" 
             onClick={onShowLogin}
-            className="text-white hover:text-blue-200 font-bold underline transition-colors"
+            className="text-white hover:text-brand-primary font-bold underline transition-colors"
           >
             Đăng nhập
           </button>
