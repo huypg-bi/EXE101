@@ -22,7 +22,7 @@ import { SportFilterProvider } from '../shared/context/SportFilterContext.jsx';
 function GlobalWrapper({ children }) {
     const { toggleTheme } = useTheme();
     return (
-        <div className="min-h-screen text-slate-900 dark:text-white overflow-x-hidden selection:bg-brand-primary/30 font-sans relative theme-transition">
+        <div className="min-h-screen text-slate-900 dark:text-white overflow-x-clip selection:bg-brand-primary/30 font-sans relative theme-transition">
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <Particles />
             </div>

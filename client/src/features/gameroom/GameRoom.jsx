@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Plus, PlusCircle, Gamepad2, Trophy, Award, Filter, Sparkles, SlidersHorizontal, RefreshCw, AlertCircle, MessageSquare, Send, X, Crown, CheckCircle2, MapPin, Calendar, DollarSign, Users } from 'lucide-react';
 import { gameRoomService } from '../../shared/services/api';
+import { useSportFilter } from '../../shared/context/SportFilterContext';
 import RoomCard from './components/RoomCard';
 import CreateRoomModal from './components/CreateRoomModal';
 import JoinRoomModal from './components/JoinRoomModal';
@@ -29,6 +30,7 @@ const INITIAL_ROOMS = [
     id: 101,
     title: 'Kèo Cầu lông tối thứ 5 giao lưu trình độ Trung bình - Khá',
     description: 'Nhóm cố định 2-4-6 tại sân số 2 Viettel Q.10. Tối nay có 2 bạn bận đột xuất nên cần tìm 2 vđv trình độ trung bình yếu đến đánh giao lưu vui vẻ, bao cầu Yonex, trà đá đầy đủ!',
+    sportId: 'badminton',
     sportName: 'Cầu lông',
     required_level: 'Intermediate',
     start_time: new Date(Date.now() + 3 * 3600 * 1000).toISOString(),
@@ -48,6 +50,7 @@ const INITIAL_ROOMS = [
     id: 102,
     title: 'FC Elite tìm 2 hậu vệ đá sân 7 tối mai tại Sân Chấu Giang',
     description: 'Đội hình đá giải cần rà soát lại lối chơi, tìm 2 anh em đá vị trí hậu vệ biên hoặc trung vệ có thể lực tốt, chơi fairplay không quạu. Sân đẹp, nước suối bao trọn gói.',
+    sportId: 'football',
     sportName: 'Bóng đá',
     required_level: 'Advanced',
     start_time: new Date(Date.now() + 24 * 3600 * 1000).toISOString(),
@@ -75,6 +78,7 @@ const INITIAL_ROOMS = [
     id: 103,
     title: 'Pickleball chiều Chủ Nhật trình 2.0+ vui vẻ ra mồ hôi',
     description: 'Tìm 2 bạn đánh đôi nam nữ hoặc đôi nam vui vẻ, sân mát mẻ, anh em thân thiện hòa đồng.',
+    sportId: 'pickleball',
     sportName: 'Pickleball',
     required_level: 'Beginner',
     start_time: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
@@ -92,6 +96,7 @@ const INITIAL_ROOMS = [
     id: 104,
     title: 'Giao lưu Tennis đơn nam trình độ Khá, đánh giải nội bộ mini',
     description: 'Cần tìm đối thủ ngang trình đánh giao lưu 3 set chuẩn, sân đẹp bóng mới.',
+    sportId: 'tennis',
     sportName: 'Tennis',
     required_level: 'Expert',
     start_time: new Date(Date.now() + 12 * 3600 * 1000).toISOString(),
@@ -109,8 +114,8 @@ const INITIAL_ROOMS = [
 ];
 
 function GameRoom() {
+  const { selectedSport } = useSportFilter();
   const [rooms, setRooms] = useState(INITIAL_ROOMS);
-  const [selectedSport, setSelectedSport] = useState('all');
   const [selectedLevel, setSelectedLevel] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [selectedTime, setSelectedTime] = useState('all');
@@ -156,9 +161,17 @@ function GameRoom() {
   // Filtered rooms
   const filteredRooms = useMemo(() => {
     return rooms.filter((room) => {
-      // Filter by Sport
-      if (selectedSport !== 'all' && room.sportName?.toLowerCase() !== selectedSport) {
-        return false;
+      // Filter by Sport from Navbar
+      if (selectedSport && selectedSport !== 'all') {
+        const s = selectedSport.toLowerCase();
+        const matchSport = room.sportId === s ||
+          (s === 'badminton' && room.sportName?.toLowerCase().includes('cầu lông')) ||
+          (s === 'football' && room.sportName?.toLowerCase().includes('bóng đá')) ||
+          (s === 'pickleball' && room.sportName?.toLowerCase().includes('pickleball')) ||
+          (s === 'tennis' && room.sportName?.toLowerCase().includes('tennis')) ||
+          (s === 'basketball' && room.sportName?.toLowerCase().includes('bóng rổ')) ||
+          (s === 'volleyball' && room.sportName?.toLowerCase().includes('bóng chuyền'));
+        if (!matchSport) return false;
       }
       // Filter by Level
       if (selectedLevel !== 'all' && room.required_level !== selectedLevel) {
@@ -307,7 +320,7 @@ function GameRoom() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#001F3F] text-slate-900 dark:text-[#F6F7ED] relative z-0 w-full overflow-x-hidden font-sans transition-colors duration-500 selection:bg-[#589470]/30 pb-20">
+    <div className="min-h-screen bg-transparent dark:bg-transparent text-slate-900 dark:text-[#F6F7ED] relative z-0 w-full overflow-x-clip font-sans transition-colors duration-500 selection:bg-[#589470]/30 pb-20">
       
       {/* Toast Alert */}
       {toastMessage && (
@@ -318,8 +331,8 @@ function GameRoom() {
       )}
 
       {/* Hero Banner Section */}
-      <div className="relative bg-transparent pt-10 pb-10 px-4 sm:px-6">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="relative bg-transparent pt-10 pb-2 px-4 sm:px-6">
+        <div className="max-w-[1600px] mx-auto">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#589470]/10 dark:bg-[#74C365]/15 text-[#589470] dark:text-[#74C365] text-xs font-black uppercase tracking-wider mb-3 border border-[#589470]/20">
               <Gamepad2 className="w-3.5 h-3.5" />
@@ -332,22 +345,12 @@ function GameRoom() {
               Bạn là người chơi lẻ chưa có nhóm? Hãy tự mở phòng chờ hoặc tham gia các sảnh đấu đang tìm bạn chơi phù hợp theo thời gian, trình độ và địa điểm ngay hôm nay!
             </p>
           </div>
-
-          <div className="shrink-0">
-            <button
-              onClick={() => setIsCreateOpen(true)}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-black text-sm bg-gradient-to-r from-[#74C365] to-[#589470] hover:opacity-95 text-white shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 group"
-            >
-              <PlusCircle className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-              <span>+ Mở phòng chờ ngay</span>
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* ── Filter Bar Section (Thanh ngang riêng biệt không có nền mờ) ── */}
-      <div className="py-4 px-4 sm:px-6">
-        <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      {/* ── Filter Bar Section ── */}
+      <div className="pb-4 pt-1 px-4 sm:px-6 sticky top-[104px] sm:top-[124px] z-40 transition-all duration-300">
+        <div className="max-w-[1600px] mx-auto bg-white/35 dark:bg-white/[0.08] backdrop-blur-2xl backdrop-saturate-[180%] border border-white/60 dark:border-white/15 rounded-3xl p-3.5 sm:p-4 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_0_rgba(255,255,255,0.8),inset_0_0_16px_rgba(255,255,255,0.4)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.25),inset_0_0_16px_rgba(255,255,255,0.05)] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 transition-all duration-300">
           
           {/* Filter Boxes Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1 max-w-4xl">
@@ -419,12 +422,22 @@ function GameRoom() {
 
           </div>
 
-          {/* Filter status display (Không có ô nền mờ) */}
-          <div className="flex items-center gap-3 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-            <SlidersHorizontal className="w-4 h-4 text-[#589470] dark:text-[#74C365]" />
-            <span>
-              Hiển thị: <strong className="text-slate-900 dark:text-white font-bold">{filteredRooms.length}</strong> phòng chờ
-            </span>
+          {/* Right actions: Filter status + Create Button */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between lg:justify-end gap-3 sm:gap-4 shrink-0 border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-200/50 dark:border-white/10">
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 px-2">
+              <SlidersHorizontal className="w-4 h-4 text-[#589470] dark:text-[#74C365]" />
+              <span>
+                Hiển thị: <strong className="text-slate-900 dark:text-white font-bold">{filteredRooms.length}</strong> phòng chờ
+              </span>
+            </div>
+
+            <button
+              onClick={() => setIsCreateOpen(true)}
+              className="px-5 py-2.5 rounded-2xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#74C365] to-[#589470] hover:opacity-95 text-white shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 group shrink-0"
+            >
+              <PlusCircle className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+              <span>Mở phòng chờ ngay</span>
+            </button>
           </div>
 
         </div>

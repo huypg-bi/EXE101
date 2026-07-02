@@ -5,7 +5,7 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#001F3F] text-slate-900 dark:text-[#F6F7ED] relative z-50 w-full overflow-x-hidden font-sans transition-colors duration-500 selection:bg-[#589470]/30">
+    <div className="min-h-screen bg-transparent dark:bg-transparent text-slate-900 dark:text-[#F6F7ED] relative z-50 w-full overflow-x-clip font-sans transition-colors duration-500 selection:bg-[#589470]/30">
 
       {/* ── Hero Banner (Full Width with Slanted Divider) ── */}
       <div className="relative w-full h-[450px] md:h-[560px] bg-slate-900 overflow-visible" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 75%, 0% 100%)' }}>

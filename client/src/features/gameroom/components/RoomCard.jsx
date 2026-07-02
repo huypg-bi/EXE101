@@ -119,25 +119,39 @@ function RoomCard({ room, currentUserId = 1, onJoin, onChat, onManage }) {
       )}
 
       <div>
-        {/* Top Header: Sport, Status, Level */}
-        <div className="flex items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2">
-            <span className="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-white/10 flex items-center justify-center text-xl shadow-inner shrink-0">
-              {sportEmoji}
-            </span>
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400 block">
-                {sportName}
-              </span>
-              <div className="flex items-center gap-1.5">
-                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${levelConfig.badge} ${levelConfig.glow}`}>
-                  {levelConfig.label}
+        {/* Top Header: Poster Name -> Sport -> Level */}
+        <div className="flex items-start sm:items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Host Avatar Circle */}
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#589470] to-[#74C365] p-0.5 shadow-md shrink-0">
+              <div className="w-full h-full rounded-[14px] bg-white dark:bg-[#001F3F] flex items-center justify-center font-bold text-base text-[#589470] dark:text-[#74C365]">
+                {(host.name || 'H').charAt(0).toUpperCase()}
+              </div>
+            </div>
+
+            {/* Poster Name -> Sport -> Level */}
+            <div className="min-w-0">
+              <div className="flex items-center flex-wrap gap-1.5 mb-1">
+                <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">
+                  {host.name || 'Trưởng phòng'}
+                </span>
+                <span className="text-slate-300 dark:text-slate-600 font-bold">•</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#589470]/10 dark:bg-[#DBE64C]/10 text-[#589470] dark:text-[#DBE64C] text-xs font-bold shrink-0">
+                  <span>{sportEmoji}</span>
+                  <span>{sportName}</span>
                 </span>
                 {isHost && (
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1 shrink-0">
                     <Crown className="w-3 h-3 text-emerald-500" /> Của bạn
                   </span>
                 )}
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Trình độ:</span>
+                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${levelConfig.badge} ${levelConfig.glow} shrink-0`}>
+                  {levelConfig.label}
+                </span>
               </div>
             </div>
           </div>
@@ -244,19 +258,12 @@ function RoomCard({ room, currentUserId = 1, onJoin, onChat, onManage }) {
 
       {/* Bottom Action Footer */}
       <div className="pt-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-between gap-3 mt-auto">
-        {/* Host Info & Price */}
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-9 h-9 rounded-full bg-slate-200 dark:bg-white/10 font-bold text-slate-700 dark:text-slate-200 flex items-center justify-center shrink-0 border border-slate-300 dark:border-white/10">
-            {(host.name || 'H').charAt(0).toUpperCase()}
-          </div>
-          <div className="min-w-0">
-            <span className="text-xs font-bold text-slate-900 dark:text-white truncate block">
-              {host.name || 'Trưởng phòng'}
-            </span>
-            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold block truncate">
-              💰 {price_info}
-            </span>
-          </div>
+        {/* Price Info */}
+        <div className="flex items-center gap-2 min-w-0 bg-slate-50 dark:bg-white/5 px-3.5 py-2 rounded-xl border border-slate-200/60 dark:border-white/10">
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium shrink-0">Chi phí:</span>
+          <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold truncate">
+            💰 {price_info}
+          </span>
         </div>
 
         {/* Buttons */}

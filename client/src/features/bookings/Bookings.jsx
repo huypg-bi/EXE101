@@ -158,8 +158,8 @@ export default function Bookings() {
     <div className="min-h-screen bg-transparent text-slate-900 dark:text-white pb-24 font-sans animate-in fade-in duration-300">
       
       {/* Hero Banner Section */}
-      <div className="relative bg-transparent pt-10 pb-10 px-4 sm:px-6">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="relative bg-transparent pt-10 pb-2 px-4 sm:px-6">
+        <div className="max-w-[1600px] mx-auto">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#589470]/10 dark:bg-[#74C365]/15 text-[#589470] dark:text-[#74C365] text-xs font-black uppercase tracking-wider mb-3 border border-[#589470]/20">
               <Building2 className="w-3.5 h-3.5" />
@@ -172,22 +172,12 @@ export default function Bookings() {
               Hệ thống tra cứu và đặt sân thể thao trực tuyến 24/7. Tìm sân gần bạn nhất, so sánh mức giá và đặt lịch nhanh chóng chỉ trong vài giây!
             </p>
           </div>
-
-          <div className="shrink-0">
-            <button
-              onClick={() => setIsHostModalOpen(true)}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-black text-sm bg-gradient-to-r from-[#74C365] to-[#589470] hover:opacity-95 text-white shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 transition-all duration-200 active:scale-95 group"
-            >
-              <PlusCircle className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-              <span>+ Đăng ký làm chủ sân</span>
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* ── Filter Bar Section (Thanh ngang riêng biệt không có nền mờ) ── */}
-      <div className="py-4 px-4 sm:px-6">
-        <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      {/* ── Filter Bar Section ── */}
+      <div className="pb-4 pt-1 px-4 sm:px-6 sticky top-[104px] sm:top-[124px] z-40 transition-all duration-300">
+        <div className="max-w-[1600px] mx-auto bg-white/35 dark:bg-white/[0.08] backdrop-blur-2xl backdrop-saturate-[180%] border border-white/60 dark:border-white/15 rounded-3xl p-3.5 sm:p-4 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_0_rgba(255,255,255,0.8),inset_0_0_16px_rgba(255,255,255,0.4)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.25),inset_0_0_16px_rgba(255,255,255,0.05)] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 transition-all duration-300">
           
           {/* Filter Box: Chỉ lọc theo Địa điểm (Location) */}
           <div className="w-full sm:max-w-xs flex-1">
@@ -209,12 +199,22 @@ export default function Bookings() {
             </div>
           </div>
 
-          {/* Filter status display (Không có ô nền mờ) */}
-          <div className="flex items-center gap-3 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-            <SlidersHorizontal className="w-4 h-4 text-[#589470] dark:text-[#74C365]" />
-            <span>
-              Hiển thị: <strong className="text-slate-900 dark:text-white font-bold">{filteredVenues.length}</strong> sân
-            </span>
+          {/* Right actions: Filter status + Create Button */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between lg:justify-end gap-3 sm:gap-4 shrink-0 border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-200/50 dark:border-white/10">
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 px-2">
+              <SlidersHorizontal className="w-4 h-4 text-[#589470] dark:text-[#74C365]" />
+              <span>
+                Hiển thị: <strong className="text-slate-900 dark:text-white font-bold">{filteredVenues.length}</strong> sân
+              </span>
+            </div>
+
+            <button
+              onClick={() => setIsHostModalOpen(true)}
+              className="px-5 py-2.5 rounded-2xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#74C365] to-[#589470] hover:opacity-95 text-white shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 group shrink-0"
+            >
+              <PlusCircle className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+              <span>Đăng ký làm chủ sân</span>
+            </button>
           </div>
 
         </div>
