@@ -50,14 +50,14 @@ function ChatPanel() {
 
   return (
     <div
-      className={`fixed right-0 top-0 bottom-16 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 z-40 flex flex-col shadow-2xl shadow-black/10 overflow-hidden transition-[width] duration-300 ease-in-out ${
-        isChatOpen ? 'w-[340px]' : 'w-0 border-l-0'
+      className={`absolute top-6 bottom-6 right-[-364px] w-[340px] glass-panel rounded-3xl border border-black/5 dark:border-white/5 z-40 flex flex-col shadow-2xl overflow-hidden transition-opacity duration-300 ease-in-out ${
+        isChatOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-black/5 dark:border-white/5">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-blue-500" />
+          <MessageSquare className="w-5 h-5 text-brand-primary" />
           <h2 className="text-sm font-bold text-gray-900 dark:text-white">{t('bottomNav.chat', 'Chat')}</h2>
         </div>
         <button
@@ -69,9 +69,9 @@ function ChatPanel() {
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800">
-        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2">
-          <Search className="w-4 h-4 text-gray-400" />
+      <div className="px-4 py-3 border-b border-black/5 dark:border-white/5">
+        <div className="flex items-center gap-2 bg-slate-100 dark:bg-white/[0.05] rounded-xl px-3 py-2 border border-transparent dark:border-white/5 focus-within:border-brand-primary/50 transition-colors">
+          <Search className="w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder={t('chat.search_placeholder', 'Tìm kiếm...')}
@@ -158,8 +158,8 @@ function ChatPanel() {
           </div>
 
           {/* Input */}
-          <div className="px-3 py-2 border-t border-gray-100 dark:border-gray-800">
-            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2">
+          <div className="px-4 py-3 border-t border-black/5 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+            <div className="flex items-center gap-2 bg-slate-100 dark:bg-white/[0.05] rounded-full px-4 py-2 border border-transparent dark:border-white/5 focus-within:border-brand-primary/50 transition-colors">
               <input
                 type="text"
                 placeholder={t('chat.message_placeholder', 'Nhập tin nhắn...')}
