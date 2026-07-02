@@ -14,8 +14,10 @@ import ChatPanel from '../shared/components/ChatPanel.jsx';
 import { ChatProvider, useChat } from '../shared/context/ChatContext.jsx';
 import LandingPage from '../features/landing/Landing.jsx';
 import PublicLayout from '../shared/layouts/PublicLayout.jsx';
+import NavbarLayout from '../shared/layouts/NavbarLayout.jsx';
 import Particles from '../features/landing/components/Particles.jsx';
 import { useTheme } from '../shared/context/ThemeContext.jsx';
+import { SportFilterProvider } from '../shared/context/SportFilterContext.jsx';
 
 function GlobalWrapper({ children }) {
     const { toggleTheme } = useTheme();
@@ -35,24 +37,23 @@ function GlobalWrapper({ children }) {
 function MainLayout({ children }) {
     const { isChatOpen } = useChat();
     return (
-        <div className="flex min-h-screen bg-transparent page-fade-in">
+        <div className="flex h-screen overflow-hidden bg-transparent page-fade-in">
             {/* Sidebar (Desktop) */}
             <Sidebar />
 
-            {/* Nội dung chính — margin left để tránh Sidebar, co lại khi chat mở */}
+            {/* Nội dung chính — margin left để tránh Sidebar */}
             <div
-                className="flex-1 flex flex-col transition-all duration-300 ease-in-out ml-[292px]"
-                style={{ marginRight: isChatOpen ? '340px' : '0px' }}
+                className="flex-1 flex flex-col min-w-0 transition-[margin] duration-300 ease-in-out ml-[292px] relative"
+                style={{ marginRight: isChatOpen ? '388px' : '0px' }}
             >
                 <TopNavbar />
                 
-                <main className="flex-1 p-6 overflow-y-auto">
+                <main className="flex-1 p-6 overflow-y-auto overflow-x-hidden">
                     {children}
                 </main>
-            </div>
 
-            {/* Panel Chat bên phải */}
-            <ChatPanel />
+                <ChatPanel />
+            </div>
         </div>
     );
 }
@@ -79,24 +80,28 @@ function AppRoutes() {
     return (
         <BrowserRouter>
             <ChatProvider>
-                <GlobalWrapper>
-                    <Routes>
-                        <Route element={<PublicLayout />}>
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Login defaultIsRegister={true} />} />
-                            <Route path="/" element={<LandingPage />} />
-                        </Route>
-                        <Route path="/home" element={<ProtectedRoute><MainLayout><Home /></MainLayout></ProtectedRoute>} />
-                        <Route path="/tournaments" element={<ProtectedRoute><MainLayout><Tournament /></MainLayout></ProtectedRoute>} />
-                        <Route path="/matches" element={<ProtectedRoute><MainLayout><GameRoom /></MainLayout></ProtectedRoute>} />
-                        <Route path="/bookings" element={<ProtectedRoute><MainLayout><Bookings /></MainLayout></ProtectedRoute>} />
-                        <Route path="/map" element={<ProtectedRoute><MainLayout><MapPage /></MainLayout></ProtectedRoute>} />
-                        <Route path="/team" element={<ProtectedRoute><MainLayout><Team /></MainLayout></ProtectedRoute>} />
-                        {/* Trang chi tiết sân — không có BottomNavigation */}
-                        <Route path="/courts/:id" element={<ProtectedRoute><CourtDetailPage /></ProtectedRoute>} />
-                        <Route path="*" element={<Navigate to="/home" replace />} />
-                    </Routes>
-                </GlobalWrapper>
+                <SportFilterProvider>
+                    <GlobalWrapper>
+                        <Routes>
+                            <Route element={<PublicLayout />}>
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/register" element={<Login defaultIsRegister={true} />} />
+                                <Route path="/" element={<LandingPage />} />
+                            </Route>
+                            <Route element={<ProtectedRoute><NavbarLayout /></ProtectedRoute>}>
+                                <Route path="/home" element={<Home />} />
+                                <Route path="/tournaments" element={<Tournament />} />
+                                <Route path="/matches" element={<GameRoom />} />
+                                <Route path="/bookings" element={<Bookings />} />
+                                <Route path="/team" element={<Team />} />
+                            </Route>
+                            <Route path="/map" element={<ProtectedRoute><MainLayout><MapPage /></MainLayout></ProtectedRoute>} />
+                            {/* Trang chi tiết sân — không có BottomNavigation */}
+                            <Route path="/courts/:id" element={<ProtectedRoute><CourtDetailPage /></ProtectedRoute>} />
+                            <Route path="*" element={<Navigate to="/home" replace />} />
+                        </Routes>
+                    </GlobalWrapper>
+                </SportFilterProvider>
             </ChatProvider>
         </BrowserRouter>
     );

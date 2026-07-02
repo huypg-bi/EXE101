@@ -139,11 +139,11 @@ function CourtDetailPage() {
   }
 
   if (isLoading || !court) {
-    return <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center text-gray-500">Đang tải...</div>;
+    return <div className="bg-transparent flex items-center justify-center text-gray-500 h-screen">Đang tải...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 pb-44">
+    <div className="bg-transparent pb-44">
       {/* Ảnh bìa + nút quay lại / yêu thích */}
       <CourtHero
         image={court.image}

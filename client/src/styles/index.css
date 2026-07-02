@@ -3,13 +3,13 @@
 @property --theme-brand {
   syntax: '<color>';
   inherits: true;
-  initial-value: #8B5CF6;
+  initial-value: #0EA5E9;
 }
 
 @property --theme-bg {
   syntax: '<color>';
   inherits: true;
-  initial-value: #0B0A10;
+  initial-value: #060B19;
 }
 
 @theme {
@@ -20,21 +20,21 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  --theme-brand: #8B5CF6;
+  --theme-brand: #0EA5E9;
   --theme-bg: #F8FAFC;
   --theme-text: #0F172A;
-  --theme-glow: rgba(139, 92, 246, 0.3);
-  --theme-glow-strong: rgba(139, 92, 246, 0.5);
+  --theme-glow: rgba(14, 165, 233, 0.3);
+  --theme-glow-strong: rgba(14, 165, 233, 0.5);
   --theme-glass-bg: rgba(255, 255, 255, 0.7);
   --theme-glass-border: rgba(0, 0, 0, 0.1);
 }
 
 .dark {
-  --theme-brand: #8B5CF6;
-  --theme-bg: #0B0A10;
+  --theme-brand: #38BDF8;
+  --theme-bg: #060B19;
   --theme-text: #ffffff;
-  --theme-glow: rgba(139, 92, 246, 0.3);
-  --theme-glow-strong: rgba(139, 92, 246, 0.5);
+  --theme-glow: rgba(56, 189, 248, 0.3);
+  --theme-glow-strong: rgba(56, 189, 248, 0.5);
   --theme-glass-bg: rgba(255, 255, 255, 0.04); /* Brighter than 0.02 for visibility */
   --theme-glass-border: rgba(255, 255, 255, 0.1); /* Brighter than 0.05 for visibility */
 }
@@ -74,7 +74,7 @@ body {
 
 .glass-panel {
   background: var(--theme-glass-bg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(4px);
   border: 1px solid var(--theme-glass-border);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
   transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;

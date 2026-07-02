@@ -36,8 +36,6 @@ function AuthPage({ defaultIsRegister = false }) {
         <span className="text-sm font-bold">Back to Home</span>
       </a>
 
-      {/* Background glow for Login */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-brand-primary/10 blur-[120px] rounded-full pointer-events-none theme-transition"></div>
       <div 
         className="relative w-full max-w-[420px] h-[680px] duration-700 ease-in-out"
         style={{ 

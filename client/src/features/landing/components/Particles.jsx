@@ -11,7 +11,7 @@ const Particles = memo(function Particles() {
       top: Math.random() * 100 + '%',
       animationDuration: (Math.random() * 15 + 10) + 's', // 10s to 25s
       animationDelay: (Math.random() * 5) + 's',
-      opacity: Math.random() * 0.5 + 0.2, // 0.2 to 0.7
+      opacity: Math.random() * 0.4 + 0.3, // 0.3 to 0.7
       size: Math.random() * 4 + 2 + 'px' // 2px to 6px
     }));
     setParticles(newParticles);
@@ -19,17 +19,19 @@ const Particles = memo(function Particles() {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Central green background glow fixed in exact viewport center */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[450px] bg-gradient-to-tr from-emerald-500/25 via-green-500/25 to-lime-400/25 blur-[110px] rounded-full pointer-events-none theme-transition"></div>
+
       {particles.map((p) => (
         <div
           key={p.id}
-          className="absolute rounded-full bg-brand-primary theme-transition"
+          className="absolute rounded-full bg-sky-400 dark:bg-[#74C365] shadow-[0_0_10px_#38BDF8,0_0_18px_rgba(0,240,255,0.5)] dark:shadow-[0_0_10px_#74C365,0_0_18px_rgba(116,195,101,0.6)] theme-transition"
           style={{
             left: p.left,
             top: p.top,
             width: p.size,
             height: p.size,
             opacity: p.opacity,
-            boxShadow: '0 0 10px var(--theme-brand)',
             animation: `floatUp ${p.animationDuration} ease-in-out infinite alternate ${p.animationDelay}`
           }}
         />

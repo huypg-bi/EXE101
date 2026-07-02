@@ -22,7 +22,7 @@ export default function Sidebar() {
       {/* Logo Area */}
       <div className="h-20 flex items-center px-6">
         <Link to="/home" className="flex items-center gap-3 group">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-primary to-indigo-500 flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-primary to-sky-500 flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform">
             <span className="text-white font-black text-sm">S</span>
           </div>
           <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white group-hover:text-brand-primary transition-colors">SportGo</span>
@@ -69,7 +69,7 @@ export default function Sidebar() {
       </div>
 
       {/* Bottom Section */}
-      <div className="p-4 mx-4 mb-4 mt-2 rounded-2xl bg-gradient-to-br from-brand-primary to-indigo-600 relative overflow-hidden group shadow-lg">
+      <div className="p-4 mx-4 mb-4 mt-2 rounded-2xl bg-gradient-to-br from-brand-primary to-blue-600 relative overflow-hidden group shadow-lg">
         <div className="absolute top-0 right-0 w-24 h-24 bg-white/20 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-white/30 transition-colors"></div>
         <h4 className="text-sm font-bold text-white mb-1 relative z-10">Pro Upgrade</h4>
         <p className="text-xs text-white/80 mb-3 relative z-10">Check our pro features.</p>

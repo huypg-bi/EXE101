@@ -22,29 +22,30 @@ function LandingPage() {
   };
 
   useEffect(() => {
-    const heroCta = document.getElementById('hero-cta');
-    if (!heroCta) return;
+    const handleScroll = () => {
+      const heroCta = document.getElementById('hero-cta');
+      if (heroCta) {
+        const rect = heroCta.getBoundingClientRect();
+        // Show nav CTA when the bottom of hero CTA scrolls above the taskbar (around 80px from top)
+        setShowNavCta(rect.bottom < 80);
+      } else {
+        // Fallback
+        setShowNavCta(window.scrollY > 450);
+      }
+    };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Show nav CTA when hero CTA is out of view (above the viewport)
-        // We check boundingClientRect.top to ensure it scrolled UP and out, not just off screen
-        setShowNavCta(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-      },
-      { threshold: 0 }
-    );
-
-    observer.observe(heroCta);
-    return () => observer.disconnect();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <>
       {/* Fixed Pill Taskbar (Always in center, Get started slides out on scroll) */}
       <header className={`fixed top-6 left-1/2 -translate-x-1/2 z-[100] transition-all duration-700 ease-out ${!isMounted || isExiting ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-        <div className="flex items-center rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/10 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+        <div className="flex items-center rounded-full bg-white/35 dark:bg-white/[0.08] backdrop-blur-2xl backdrop-saturate-[180%] border border-white/60 dark:border-white/15 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_0_rgba(255,255,255,0.8),inset_0_0_16px_rgba(255,255,255,0.4)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.25),inset_0_0_16px_rgba(255,255,255,0.05)] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden">
           
-          <nav className="flex items-center px-6 gap-8">
+          <nav className="flex items-center px-6 gap-8 shrink-0">
             <a href="#creations" className="text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition-colors">Home</a>
             <a href="#about" className="text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition-colors">About</a>
             <a href="#pricing" className="text-sm font-medium text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</a>
@@ -52,13 +53,13 @@ function LandingPage() {
           </nav>
 
           <div 
-            className="overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-end"
-            style={{ 
-              width: showNavCta ? '130px' : '0px',
-              opacity: showNavCta ? 1 : 0
-            }}
+            className={`transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex items-center justify-end overflow-hidden ${showNavCta ? 'max-w-[160px] opacity-100 pl-2 pr-0.5' : 'max-w-0 opacity-0 pl-0 pr-0 pointer-events-none'}`}
           >
-            <a href="/register" onClick={handleNavigate('/register')} className="bg-brand-primary hover:opacity-80 text-white font-bold rounded-full transition-all flex items-center justify-center text-sm px-5 py-2 w-max whitespace-nowrap shadow-[0_0_15px_var(--theme-glow)] mr-1">
+            <a 
+              href="/register" 
+              onClick={handleNavigate('/register')} 
+              className={`bg-[#74C365] hover:bg-[#5FA352] dark:bg-[#1E488F] dark:hover:bg-[#183972] text-white font-semibold rounded-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex items-center justify-center text-xs sm:text-sm px-4 py-1.5 w-max whitespace-nowrap shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_4px_15px_rgba(116,195,101,0.3)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_4px_15px_rgba(30,72,143,0.3)] ${showNavCta ? 'translate-x-0' : 'translate-x-full'}`}
+            >
               Get started
             </a>
           </div>
@@ -69,17 +70,17 @@ function LandingPage() {
         {/* Outer Static Header (Scrolls away naturally) */}
         <div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 md:px-12 py-6 z-40">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-primary to-indigo-500 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#74C365] to-emerald-500 dark:from-[#1E488F] dark:to-indigo-500 flex items-center justify-center shrink-0 transition-colors duration-500">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-xl tracking-tight">Agentix</span>
           </div>
           
           <div className="flex items-center gap-4">
-            <a href="/login" onClick={handleNavigate('/login')} className="text-sm font-bold text-slate-900 dark:text-white hover:text-brand-primary transition-all duration-300">
+            <a href="/login" onClick={handleNavigate('/login')} className="text-sm font-bold text-slate-900 dark:text-white hover:text-[#74C365] dark:hover:text-[#1E488F] transition-all duration-300">
               Sign in
             </a>
-            <a href="/register" onClick={handleNavigate('/register')} className="bg-brand-primary hover:opacity-80 text-white font-bold rounded-full transition-all shadow-[0_0_15px_var(--theme-glow)] hover:shadow-[0_0_25px_var(--theme-glow-strong)] text-sm px-5 py-2.5">
+            <a href="/register" onClick={handleNavigate('/register')} className="bg-[#74C365] hover:bg-[#5FA352] dark:bg-[#1E488F] dark:hover:bg-[#183972] text-white font-bold rounded-full transition-all duration-300 shadow-[0_4px_15px_rgba(116,195,101,0.35)] hover:shadow-[0_6px_20px_rgba(116,195,101,0.5)] dark:shadow-[0_4px_15px_rgba(30,72,143,0.35)] dark:hover:shadow-[0_6px_20px_rgba(30,72,143,0.5)] text-sm px-5 py-2.5">
               Sign up
             </a>
           </div>
@@ -87,8 +88,6 @@ function LandingPage() {
 
       {/* Hero Section */}
       <main className="relative pt-48 pb-32 px-4 flex flex-col items-center justify-center text-center z-10">
-        {/* Glow behind hero */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-brand-primary/20 blur-[100px] rounded-full pointer-events-none theme-transition"></div>
 
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 backdrop-blur-md mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>

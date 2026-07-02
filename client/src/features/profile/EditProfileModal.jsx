@@ -112,7 +112,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
               >
                 {/* Front Face: Avatar */}
                 <div 
-                  className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-blue-500/30 group"
+                  className="absolute inset-0 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-blue-500/30 group"
                   style={{ backfaceVisibility: 'hidden' }}
                 >
                   {(formData.name || user?.email || '').charAt(0).toUpperCase()}
